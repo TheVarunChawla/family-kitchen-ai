@@ -1,10 +1,10 @@
-name: Weekly Framework Test
+name: Parivaar Nutrition AI
 
 on:
   workflow_dispatch:
 
 jobs:
-  framework:
+  nutrition-report:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,9 +25,31 @@ jobs:
         run: |
           python scripts/generate_framework.py
 
-      - name: Send To Telegram
+      - name: Generate Grocery List
+        run: |
+          python scripts/generate_grocery.py
+
+      - name: Generate Health Mission
+        run: |
+          python scripts/generate_health.py
+
+      - name: Send Framework
         run: |
           curl -X POST \
           "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
           -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
           -F photo="@weekly_framework.png"
+
+      - name: Send Grocery List
+        run: |
+          curl -X POST \
+          "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -F photo="@grocery_list.png"
+
+      - name: Send Health Mission
+        run: |
+          curl -X POST \
+          "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -F photo="@health_mission.png"
