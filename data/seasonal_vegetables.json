@@ -1,4 +1,39 @@
 {
+  "January": [
+    "Methi",
+    "Palak",
+    "Bathua",
+    "Gajar",
+    "Matar"
+  ],
+
+  "February": [
+    "Methi",
+    "Palak",
+    "Bathua",
+    "Gajar",
+    "Matar"
+  ],
+
+  "March": [
+    "Palak",
+    "Matar",
+    "Beans"
+  ],
+
+  "April": [
+    "Lauki",
+    "Tori",
+    "Bhindi"
+  ],
+
+  "May": [
+    "Lauki",
+    "Tori",
+    "Bhindi",
+    "Kakdi"
+  ],
+
   "June": [
     "Lauki",
     "Bhindi",
@@ -6,12 +41,39 @@
     "Parwal",
     "Kakdi"
   ],
+
   "July": [
     "Lauki",
     "Bhindi",
     "Tori",
     "Parwal"
   ],
+
+  "August": [
+    "Lauki",
+    "Bhindi",
+    "Parwal"
+  ],
+
+  "September": [
+    "Lauki",
+    "Bhindi",
+    "Parwal"
+  ],
+
+  "October": [
+    "Palak",
+    "Methi",
+    "Gajar"
+  ],
+
+  "November": [
+    "Methi",
+    "Palak",
+    "Bathua",
+    "Gajar"
+  ],
+
   "December": [
     "Methi",
     "Palak",
