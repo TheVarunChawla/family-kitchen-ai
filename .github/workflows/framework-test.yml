@@ -25,6 +25,10 @@ jobs:
         run: | 
           python scripts/generate_meal_plan.py
 
+      - name: Generate Weekly Meal Plan
+        run: |
+          python scripts/generate_weekly_plan.py
+
       - name: Generate Framework
         run: |
           python scripts/generate_framework.py
