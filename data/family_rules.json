@@ -1,0 +1,18 @@
+{
+  "diabetes": true,
+  "high_bp": true,
+  "vegetarian": true,
+
+  "avoid": [
+    "White Bread",
+    "Cold Drinks",
+    "Excess Sugar"
+  ],
+
+  "preferred_breakfast": [
+    "Poha",
+    "Dalia",
+    "Moong Chilla",
+    "Besan Chilla"
+  ]
+}
