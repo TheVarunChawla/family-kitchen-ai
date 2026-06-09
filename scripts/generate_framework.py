@@ -17,6 +17,20 @@ vegetables = seasonal_data.get(current_month, [])
 
 # -------------------------
 
+# Load Meal Plan
+
+# -------------------------
+
+with open("data/meal_plan.json", "r") as f:
+meal_plan = json.load(f)
+
+breakfast = meal_plan["breakfast"]
+lunch = meal_plan["lunch"]
+dinner = meal_plan["dinner"]
+protein = meal_plan["protein_mission"]
+
+# -------------------------
+
 # Create Image
 
 # -------------------------
@@ -24,12 +38,6 @@ vegetables = seasonal_data.get(current_month, [])
 img = Image.new("RGB", (1200, 1600), "#f5f7f9")
 
 draw = ImageDraw.Draw(img)
-
-# -------------------------
-
-# Header
-
-# -------------------------
 
 draw.text(
 (40, 30),
@@ -45,33 +53,27 @@ fill="black"
 
 # -------------------------
 
-# Main Framework
+# Build Report Text
 
 # -------------------------
 
-content = """
-📅 WEEKLY KITCHEN FRAMEWORK
+content = "📅 WEEKLY KITCHEN FRAMEWORK\n\n"
 
-🍳 Breakfast Options
-✓ Moong Chilla
-✓ Besan Chilla
-✓ Poha + Peanuts
+content += "🍳 Breakfast Options\n"
+for item in breakfast:
+content += f"✓ {item}\n"
 
-🥬 Lunch Options
-✓ Bhindi
-✓ Lauki
-✓ Tori
+content += "\n🥬 Lunch Options\n"
+for item in lunch:
+content += f"✓ {item}\n"
 
-🍲 Dinner Options
-✓ Mixed Dal
-✓ Rajma
-✓ Chole
+content += "\n🍲 Dinner Options\n"
+for item in dinner:
+content += f"✓ {item}\n"
 
-💪 Protein Mission
-✓ Hung Curd
-✓ Soya Granules
-✓ Paneer
-"""
+content += "\n💪 Protein Mission\n"
+for item in protein:
+content += f"✓ {item}\n"
 
 draw.text(
 (40, 150),
@@ -91,7 +93,7 @@ for veg in vegetables:
 seasonal_text += f"✓ {veg}\n"
 
 draw.text(
-(40, 700),
+(40, 800),
 seasonal_text,
 fill="black"
 )
@@ -104,4 +106,5 @@ fill="black"
 
 img.save("weekly_framework.png")
 
-print(f"Framework Created For {current_month}")
+print("Framework Created")
+
