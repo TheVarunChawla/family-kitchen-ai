@@ -1,43 +1,33 @@
-from PIL import Image, ImageDraw
 import json
+import random
 
-with open("data/weekly_meal_plan.json", "r") as f:
-weekly_plan = json.load(f)
+with open("data/seasonal_vegetables.json", "r") as f:
+    seasonal_data = json.load(f)
 
-img = Image.new("RGB", (1400, 1800), "#f5f7f9")
-draw = ImageDraw.Draw(img)
+with open("data/family_profile.json", "r") as f:
+    family_profile = json.load(f)
 
-draw.text(
-(40, 20),
-"PARIVAAR NUTRITION AI - WEEKLY MEAL PLAN",
-fill="black"
-)
+with open("data/protein_options.json", "r") as f:
+    protein_data = json.load(f)
 
-y = 100
+month = "June"
+vegetables = seasonal_data[month]
+breakfast_options = family_profile["breakfast_options"]
+protein_options = protein_data["daily_protein_options"]
 
-for day, meals in weekly_plan.items():
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
-```
-text = f"""
-```
+weekly_plan = {}
 
-{day}
+for day in days:
+    weekly_plan[day] = {
+        "breakfast": random.choice(breakfast_options),
+        "lunch": random.choice(vegetables),
+        "dinner": random.choice(["Mixed Dal", "Rajma", "Chole", "Moong Dal", "Arhar Dal"]),
+        "protein": random.choice(protein_options)
+    }
 
-Breakfast: {meals['breakfast']}
-Lunch: {meals['lunch']}
-Dinner: {meals['dinner']}
-"""
+with open("data/weekly_plan.json", "w") as f:
+    json.dump(weekly_plan, f, indent=2)
 
-```
-draw.text(
-    (40, y),
-    text,
-    fill="black"
-)
-
-y += 220
-```
-
-img.save("weekly_meal_plan.png")
-
-print("Weekly Meal Plan Created")
+print("Weekly Meal Plan Generated")
