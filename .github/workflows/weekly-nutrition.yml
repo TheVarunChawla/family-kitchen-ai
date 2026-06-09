@@ -1,0 +1,72 @@
+name: Parivaar Nutrition AI — Weekly Report
+
+on:
+  schedule:
+    - cron: '0 4 * * 0'   # Every Sunday 4:00 AM UTC = 9:30 AM IST
+  workflow_dispatch:        # Also allow manual trigger
+
+jobs:
+  nutrition-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: pip install pillow
+
+      - name: Generate Weekly Meal Plan (JSON)
+        run: python scripts/meal_engine.py
+
+      - name: Generate Image 1 — Meal Plan Card
+        run: python scripts/generate_meal_card.py
+
+      - name: Generate Image 2 — Shopping List
+        run: python scripts/generate_shopping_card.py
+
+      - name: Generate Image 3 — Health Recommendations
+        run: python scripts/generate_health_card.py
+
+      - name: Generate Image 4 — Protein Score
+        run: python scripts/generate_protein_card.py
+
+      - name: Send Intro Message
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d text="🌿 *Parivaar Weekly Nutrition Report*%0A%0AHere is your plan for this week — meal plan, shopping list, health tips, and protein score.%0A%0A_Generated automatically every Sunday morning_ 🙏" \
+          -d parse_mode="Markdown"
+
+      - name: Send Image 1 — Meal Plan
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -F photo="@meal_plan_card.png" \
+          -F caption="🍽 7-Day Meal Plan"
+
+      - name: Send Image 2 — Shopping List
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -F photo="@shopping_list.png" \
+          -F caption="🛒 Weekly Shopping List"
+
+      - name: Send Image 3 — Health Tips
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -F photo="@health_card.png" \
+          -F caption="💚 Health Recommendations"
+
+      - name: Send Image 4 — Protein Score
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -F photo="@protein_card.png" \
+          -F caption="💪 Protein Score Card"
