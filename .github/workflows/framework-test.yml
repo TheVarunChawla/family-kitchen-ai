@@ -1,0 +1,33 @@
+name: Weekly Framework Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  framework:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Pillow
+        run: |
+          pip install pillow
+
+      - name: Generate Framework
+        run: |
+          python scripts/generate_framework.py
+
+      - name: Send To Telegram
+        run: |
+          curl -X POST \
+          "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -F photo="@weekly_framework.png"
