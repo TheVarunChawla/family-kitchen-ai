@@ -10,6 +10,6 @@ jobs:
     steps:
       - name: Send Telegram Message
         run: |
-          curl -X POST "https://api.telegram.org/bot${{8904770141:AAFsCaFyzvgFvjWtrtKz0vHPz-2gMCJq_RE}}/sendMessage" \
-          -d chat_id="${{-5251199321}}" \
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
           -d text="Hello Varun, GitHub Action is working!"
