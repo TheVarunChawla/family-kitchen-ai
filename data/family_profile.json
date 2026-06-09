@@ -1,0 +1,16 @@
+{
+  "city": "Delhi",
+  "family_size": 6,
+  "diet": "Vegetarian",
+  "health_conditions": [
+    "Diabetes",
+    "High BP"
+  ],
+  "breakfast_options": [
+    "Poha",
+    "Upma",
+    "Dalia",
+    "Moong Chilla",
+    "Besan Chilla"
+  ]
+}
