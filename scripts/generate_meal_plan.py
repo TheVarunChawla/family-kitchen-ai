@@ -2,7 +2,7 @@ import json
 import random
 
 with open("data/seasonal_vegetables.json", "r") as f:
-seasonal_data = json.load(f)
+seasonal_data = json.load(f)    
 
 month = "June"
 
