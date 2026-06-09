@@ -2,46 +2,17 @@
   "city": "Delhi",
   "family_size": 6,
   "diet": "Vegetarian",
-
   "members": [
-    {
-      "name": "Dad",
-      "age": 61,
-      "conditions": ["Diabetes", "High BP"]
-    },
-    {
-      "name": "Mom",
-      "age": 60,
-      "conditions": ["Diabetes", "High BP"]
-    },
-    {
-      "name": "Sister 1",
-      "age": 31,
-      "conditions": ["Diabetes"]
-    },
-    {
-      "name": "Sister 2",
-      "age": 28,
-      "conditions": []
-    },
-    {
-      "name": "Varun",
-      "age": 34,
-      "conditions": []
-    },
-    {
-      "name": "Wife",
-      "age": 32,
-      "conditions": []
-    }
+    { "name": "Dad",     "age": 61, "conditions": ["Diabetes", "High BP", "Muscle Loss"], "protein_priority": "high" },
+    { "name": "Mom",     "age": 60, "conditions": ["Diabetes", "High BP"], "protein_priority": "medium" },
+    { "name": "Sister1", "age": 31, "conditions": ["Diabetes", "Overweight"], "protein_priority": "medium" },
+    { "name": "Sister2", "age": 28, "conditions": [], "protein_priority": "normal" },
+    { "name": "Varun",   "age": 34, "conditions": [], "protein_priority": "high" },
+    { "name": "Wife",    "age": 32, "conditions": [], "protein_priority": "normal" }
   ],
-
-  "breakfast_options": [
-    "Poha",
-    "Upma",
-    "Dalia",
-    "Moong Chilla",
-    "Besan Chilla",
-    "Paneer Chilla"
-  ]
+  "breakfast_weekday": ["Poha", "Upma", "Dalia", "Moong Chilla", "Besan Chilla", "Paneer Chilla"],
+  "breakfast_weekend": ["Aloo Paratha", "Gobhi Paratha", "Mooli Paratha"],
+  "dal_options": ["Arhar Dal", "Moong Dal", "Masoor Dal", "Chana Dal", "Mixed Dal"],
+  "special_dinner": ["Rajma", "Chole", "Kadhi"],
+  "avoid": ["White Bread", "Cold Drinks", "Excess Sugar", "Excess Salt", "Fried Snacks"]
 }

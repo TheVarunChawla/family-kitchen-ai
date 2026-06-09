@@ -1,10 +1,13 @@
 {
-"daily_protein_options": [
-"Hung Curd",
-"Paneer",
-"Roasted Chana",
-"Soya Granules",
-"Mixed Dal",
-"Sprouts"
-]
+  "daily_protein_options": [
+    { "name": "Hung Curd",     "protein_per_100g": 11, "practical": true },
+    { "name": "Paneer",        "protein_per_100g": 18, "practical": true },
+    { "name": "Roasted Chana", "protein_per_100g": 19, "practical": true },
+    { "name": "Soya Granules", "protein_per_100g": 52, "practical": true },
+    { "name": "Sprouts",       "protein_per_100g": 9,  "practical": true },
+    { "name": "Moong Dal",     "protein_per_100g": 24, "practical": true },
+    { "name": "Peanuts",       "protein_per_100g": 26, "practical": true },
+    { "name": "Dahi",          "protein_per_100g": 4,  "practical": true }
+  ],
+  "target_daily_grams": { "Dad": 70, "Mom": 55, "Sister1": 60, "Sister2": 55, "Varun": 80, "Wife": 55 }
 }
