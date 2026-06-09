@@ -2,11 +2,7 @@ from PIL import Image, ImageDraw
 import json
 from datetime import datetime
 
-# -------------------------
-
 # Load Seasonal Vegetables
-
-# -------------------------
 
 current_month = datetime.now().strftime("%B")
 
@@ -15,11 +11,7 @@ seasonal_data = json.load(f)
 
 vegetables = seasonal_data.get(current_month, [])
 
-# -------------------------
-
 # Load Meal Plan
-
-# -------------------------
 
 with open("data/meal_plan.json", "r") as f:
 meal_plan = json.load(f)
@@ -29,15 +21,12 @@ lunch = meal_plan["lunch"]
 dinner = meal_plan["dinner"]
 protein = meal_plan["protein_mission"]
 
-# -------------------------
-
 # Create Image
 
-# -------------------------
-
 img = Image.new("RGB", (1200, 1600), "#f5f7f9")
-
 draw = ImageDraw.Draw(img)
+
+# Header
 
 draw.text(
 (40, 30),
@@ -51,11 +40,7 @@ f"Delhi NCR | {current_month}",
 fill="black"
 )
 
-# -------------------------
-
 # Build Report Text
-
-# -------------------------
 
 content = "📅 WEEKLY KITCHEN FRAMEWORK\n\n"
 
@@ -81,11 +66,7 @@ content,
 fill="black"
 )
 
-# -------------------------
-
 # Seasonal Vegetables
-
-# -------------------------
 
 seasonal_text = "🌿 Seasonal Vegetables\n\n"
 
@@ -98,13 +79,8 @@ seasonal_text,
 fill="black"
 )
 
-# -------------------------
-
 # Save Image
-
-# -------------------------
 
 img.save("weekly_framework.png")
 
 print("Framework Created")
-
