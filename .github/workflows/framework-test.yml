@@ -20,6 +20,10 @@ jobs:
       - name: Install Pillow
         run: |
           pip install pillow
+          
+      - name: Generate Meal Plan 
+        run: | 
+          python scripts/generate_meal_plan.py
 
       - name: Generate Framework
         run: |
