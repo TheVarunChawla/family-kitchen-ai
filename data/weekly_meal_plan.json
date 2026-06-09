@@ -1,0 +1,43 @@
+{
+"Monday": {
+"breakfast": "Moong Chilla + Dahi",
+"lunch": "Bhindi + Roti + Salad",
+"dinner": "Arhar Dal + Roti"
+},
+
+"Tuesday": {
+"breakfast": "Vegetable Dalia",
+"lunch": "Lauki Chana Dal + Roti",
+"dinner": "Rajma + Salad"
+},
+
+"Wednesday": {
+"breakfast": "Poha + Peanuts",
+"lunch": "Tori + Roti",
+"dinner": "Moong Dal + Roti"
+},
+
+"Thursday": {
+"breakfast": "Besan Chilla + Dahi",
+"lunch": "Parwal + Roti",
+"dinner": "Chole + Salad"
+},
+
+"Friday": {
+"breakfast": "Upma + Sprouts",
+"lunch": "Bhindi + Roti",
+"dinner": "Mixed Dal + Roti"
+},
+
+"Saturday": {
+"breakfast": "Paneer Chilla",
+"lunch": "Lauki + Roti",
+"dinner": "Rajma + Salad"
+},
+
+"Sunday": {
+"breakfast": "Paratha + Dahi",
+"lunch": "Seasonal Sabzi + Roti",
+"dinner": "Light Dal + Salad"
+}
+}
