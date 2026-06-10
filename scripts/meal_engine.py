@@ -164,6 +164,14 @@ def generate_weekly_plan():
 
     plan = {}
 
+    breakfast_usage = {
+    "Moong Chilla": 0,
+    "Paneer Chilla": 0,
+    "Besan Chilla": 0
+}
+
+protein_usage = {}
+    
     breakfast_count = {}
     vegetable_count = {}
     protein_count = {}
