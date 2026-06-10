@@ -11,12 +11,21 @@ PROTEIN_VALUES = {
     "Rajma": 13, "Chole": 14, "Roasted Chana": 9, "Peanuts": 8
 }
 
-def calculate_day_protein(day_plan):
+def calculate_day_protein(day_plan, nutrition_db):
     total_protein = 0
-    for meal in [day_plan["breakfast"], day_plan["dinner"], day_plan["protein_add"]]:
-        for food, protein in PROTEIN_VALUES.items():
+
+    meals = [
+        day_plan["breakfast"],
+        day_plan["dinner"],
+        day_plan["protein_add"]
+    ]
+
+    for meal in meals:
+        for food, info in nutrition_db.items():
+
             if food.lower() in meal.lower():
-                total_protein += protein
+                total_protein += info["protein"]
+
     return total_protein
 
 def optimize_low_protein_days(plan):
