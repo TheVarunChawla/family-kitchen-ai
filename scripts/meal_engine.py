@@ -24,7 +24,7 @@ def optimize_low_protein_days(plan):
     for day, meals in plan.items():
         current_protein = calculate_day_protein(meals)
         if current_protein < TARGET_PROTEIN:
-            if meals["breakfast"] in ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha"]:
+            if meals["breakfast"] in ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]:
                 meals["breakfast"] = random.choice(["Moong Chilla","Paneer Chilla","Besan Chilla"])
             current_protein = calculate_day_protein(meals)
             if current_protein < TARGET_PROTEIN:
