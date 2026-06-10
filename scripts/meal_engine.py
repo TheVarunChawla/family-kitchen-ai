@@ -197,9 +197,12 @@ protein_usage = {}
             if high_breakfast_days < 3:
 
                 choices = [
-                    b for b in weekday_breakfast
-                    if b in high_protein_breakfast
-                ]
+    b for b in weekday_breakfast
+    if (
+        b in high_protein_breakfast
+        and breakfast_count.get(b, 0) < 2
+    )
+]
 
                 if choices:
                     breakfast = random.choice(choices)
