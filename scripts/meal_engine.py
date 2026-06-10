@@ -298,6 +298,9 @@ def generate_weekly_plan():
         }
 
 
+        # Final AI optimization pass
+    plan = optimize_low_protein_days(plan)
+
     return plan, month, vegetables
 
 def generate_shopping_list(plan, vegetables):
