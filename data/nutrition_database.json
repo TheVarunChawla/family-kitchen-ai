@@ -1,43 +1,19 @@
 {
-  "Moong Dal": {
-    "protein": 7,
-    "type": "dal",
-    "quality": "good"
+  "Moong Chilla": {
+    "protein": 12,
+    "type": "breakfast",
+    "quality": "excellent"
   },
 
-  "Masoor Dal": {
-    "protein": 9,
-    "type": "dal",
-    "quality": "good"
+  "Paneer Chilla": {
+    "protein": 14,
+    "type": "breakfast",
+    "quality": "excellent"
   },
 
-  "Chana Dal": {
-    "protein": 9,
-    "type": "dal",
-    "quality": "good"
-  },
-
-  "Mixed Dal": {
-    "protein": 8,
-    "type": "dal",
-    "quality": "good"
-  },
-
-  "Arhar Dal": {
-    "protein": 8,
-    "type": "dal",
-    "quality": "good"
-  },
-
-  "Rajma": {
-    "protein": 9,
-    "type": "legume",
-    "quality": "good"
-  },
-
-  "Chole": {
-    "protein": 9,
-    "type": "legume",
+  "Besan Chilla": {
+    "protein": 10,
+    "type": "breakfast",
     "quality": "good"
   },
 
@@ -47,34 +23,22 @@
     "quality": "high"
   },
 
-  "Dahi": {
-    "protein": 6,
-    "type": "dairy",
-    "quality": "moderate"
-  },
-
-  "Hung Curd": {
-    "protein": 10,
-    "type": "dairy",
-    "quality": "high"
-  },
-
-  "Milk": {
-    "protein": 6,
-    "type": "dairy",
-    "quality": "moderate"
-  },
-
-  "Kadhi": {
-    "protein": 5,
-    "type": "meal",
-    "quality": "moderate"
-  },
-
   "Soya Granules": {
     "protein": 25,
     "type": "soy",
     "quality": "excellent"
+  },
+
+  "Hung Curd": {
+    "protein": 11,
+    "type": "dairy",
+    "quality": "high"
+  },
+
+  "Dahi": {
+    "protein": 6,
+    "type": "dairy",
+    "quality": "moderate"
   },
 
   "Sprouts": {
@@ -90,44 +54,50 @@
   },
 
   "Peanuts": {
-    "protein": 7,
-    "type": "nuts",
-    "quality": "good"
-  },
-
-  "Besan Chilla": {
-    "protein": 10,
-    "type": "breakfast",
-    "quality": "good"
-  },
-
-  "Moong Chilla": {
-    "protein": 12,
-    "type": "breakfast",
-    "quality": "excellent"
-  },
-
-  "Paneer Chilla": {
-    "protein": 15,
-    "type": "breakfast",
-    "quality": "high"
-  },
-
-  "Dalia": {
-    "protein": 5,
-    "type": "breakfast",
+    "protein": 8,
+    "type": "snack",
     "quality": "moderate"
   },
 
-  "Sattu": {
-    "protein": 10,
-    "type": "traditional",
+  "Moong Dal": {
+    "protein": 7,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Arhar Dal": {
+    "protein": 8,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Masoor Dal": {
+    "protein": 9,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Mixed Dal": {
+    "protein": 9,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Chana Dal": {
+    "protein": 13,
+    "type": "dal",
+    "quality": "excellent"
+  },
+
+  "Rajma": {
+    "protein": 13,
+    "type": "legume",
     "quality": "high"
   },
 
-  "Tofu": {
-    "protein": 15,
-    "type": "soy",
-    "quality": "excellent"
+  "Chole": {
+    "protein": 14,
+    "type": "legume",
+    "quality": "high"
   }
 }
