@@ -175,6 +175,7 @@ protein_usage = {}
     breakfast_count = {}
     vegetable_count = {}
     protein_count = {}
+    dinner_count = {}
 
     high_breakfast_days = 0
 
@@ -243,21 +244,39 @@ protein_usage = {}
         )
 
 
-        # =============================
-        # DINNER SELECTION
-        # =============================
+# =============================
+# DINNER SELECTION
+# =============================
 
-        if day in ["Tuesday", "Friday"]:
+if day == "Tuesday":
 
-            dinner = random.choice(
-                special_dinner
-            )
+    dinner = "Rajma"
 
-        else:
+elif day == "Friday":
 
-            dinner = random.choice(
-                dal_options
-            )
+    dinner = "Chole"
+
+elif day == "Sunday":
+
+    dinner = "Kadhi"
+
+else:
+
+    available_dals = [
+        d for d in dal_options
+        if dinner_count.get(d, 0) < 2
+    ]
+
+    if not available_dals:
+        available_dals = dal_options
+
+    dinner = random.choice(
+        available_dals
+    )
+
+dinner_count[dinner] = (
+    dinner_count.get(dinner, 0) + 1
+)
 
 
         # =============================
