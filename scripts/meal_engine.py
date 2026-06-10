@@ -20,45 +20,185 @@ def get_current_month():
 
 def generate_weekly_plan():
     profile, seasonal, protein_data = load_data()
+
     month = get_current_month()
     vegetables = seasonal.get(month, seasonal["June"])
-    protein_options = [p["name"] for p in protein_data["daily_protein_options"]]
 
-    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    protein_options = [
+        p["name"] for p in protein_data["daily_protein_options"]
+    ]
+
+    days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+    ]
+
     weekday_breakfast = profile["breakfast_weekday"]
     weekend_breakfast = profile["breakfast_weekend"]
     dal_options = profile["dal_options"]
     special_dinner = profile["special_dinner"]
 
-    # Ensure variety - no repeat breakfast 2 days in a row
-    breakfast_pool = weekday_breakfast.copy()
-    random.shuffle(breakfast_pool)
+    # Protein intelligence
+    high_protein_breakfast = [
+        "Moong Chilla",
+        "Paneer Chilla"
+    ]
+
+    low_protein_breakfast = [
+        "Poha",
+        "Upma",
+        "Dalia",
+        "Aloo Paratha",
+        "Gobhi Paratha"
+    ]
+
+    high_protein_adds = [
+        "Paneer",
+        "Soya Granules",
+        "Hung Curd",
+        "Sprouts"
+    ]
 
     plan = {}
-    for i, day in enumerate(days):
-        is_weekend = day in ["Saturday", "Sunday"]
 
-        if is_weekend:
-            breakfast = random.choice(weekend_breakfast)
+    breakfast_count = {}
+    vegetable_count = {}
+    protein_count = {}
+
+    high_breakfast_days = 0
+
+
+    for day in days:
+
+        # =============================
+        # BREAKFAST SELECTION
+        # =============================
+
+        if day in ["Saturday", "Sunday"]:
+
+            breakfast = random.choice(
+                weekend_breakfast
+            )
+
         else:
-            breakfast = breakfast_pool[i % len(breakfast_pool)]
 
-        sabzi = random.choice(vegetables)
+            # Ensure a minimum of 3 high-protein breakfasts
+            if high_breakfast_days < 3:
 
-        # Special dinner 2x per week (Rajma/Chole), dal rest of days
+                choices = [
+                    b for b in weekday_breakfast
+                    if b in high_protein_breakfast
+                ]
+
+                if choices:
+                    breakfast = random.choice(choices)
+                    high_breakfast_days += 1
+                else:
+                    breakfast = random.choice(weekday_breakfast)
+
+            else:
+
+                choices = [
+                    b for b in weekday_breakfast
+                    if breakfast_count.get(b, 0) < 2
+                ]
+
+                breakfast = random.choice(choices)
+
+        breakfast_count[breakfast] = (
+            breakfast_count.get(breakfast, 0) + 1
+        )
+
+
+        # =============================
+        # LUNCH VEGETABLE SELECTION
+        # =============================
+
+        available_veg = [
+            veg for veg in vegetables
+            if vegetable_count.get(veg, 0) < 2
+        ]
+
+        if not available_veg:
+            available_veg = vegetables
+
+        sabzi = random.choice(available_veg)
+
+        vegetable_count[sabzi] = (
+            vegetable_count.get(sabzi, 0) + 1
+        )
+
+
+        # =============================
+        # DINNER SELECTION
+        # =============================
+
         if day in ["Tuesday", "Friday"]:
-            dinner_main = random.choice(special_dinner)
-        else:
-            dinner_main = random.choice(dal_options)
 
-        protein_add = random.choice(protein_options)
+            dinner = random.choice(
+                special_dinner
+            )
+
+        else:
+
+            dinner = random.choice(
+                dal_options
+            )
+
+
+        # =============================
+        # PROTEIN BOOSTER SELECTION
+        # =============================
+
+        if breakfast in low_protein_breakfast:
+
+            choices = [
+                p for p in protein_options
+                if p in high_protein_adds
+                and protein_count.get(p, 0) < 2
+            ]
+
+        else:
+
+            choices = [
+                p for p in protein_options
+                if protein_count.get(p, 0) < 2
+            ]
+
+
+        if not choices:
+            choices = protein_options
+
+
+        protein_add = random.choice(
+            choices
+        )
+
+        protein_count[protein_add] = (
+            protein_count.get(protein_add, 0) + 1
+        )
+
+
+        # =============================
+        # SAVE DAILY PLAN
+        # =============================
 
         plan[day] = {
+
             "breakfast": breakfast,
+
             "lunch": f"{sabzi} Sabzi + Roti",
-            "dinner": f"{dinner_main} + Roti",
+
+            "dinner": f"{dinner} + Roti",
+
             "protein_add": protein_add
         }
+
 
     return plan, month, vegetables
 
