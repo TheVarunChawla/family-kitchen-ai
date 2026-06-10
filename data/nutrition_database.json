@@ -5,6 +5,42 @@
     "quality": "good"
   },
 
+  "Masoor Dal": {
+    "protein": 9,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Chana Dal": {
+    "protein": 9,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Mixed Dal": {
+    "protein": 8,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Arhar Dal": {
+    "protein": 8,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Rajma": {
+    "protein": 9,
+    "type": "legume",
+    "quality": "good"
+  },
+
+  "Chole": {
+    "protein": 9,
+    "type": "legume",
+    "quality": "good"
+  },
+
   "Paneer": {
     "protein": 18,
     "type": "dairy",
@@ -14,6 +50,24 @@
   "Dahi": {
     "protein": 6,
     "type": "dairy",
+    "quality": "moderate"
+  },
+
+  "Hung Curd": {
+    "protein": 10,
+    "type": "dairy",
+    "quality": "high"
+  },
+
+  "Milk": {
+    "protein": 6,
+    "type": "dairy",
+    "quality": "moderate"
+  },
+
+  "Kadhi": {
+    "protein": 5,
+    "type": "meal",
     "quality": "moderate"
   },
 
@@ -29,6 +83,18 @@
     "quality": "good"
   },
 
+  "Roasted Chana": {
+    "protein": 9,
+    "type": "snack",
+    "quality": "good"
+  },
+
+  "Peanuts": {
+    "protein": 7,
+    "type": "nuts",
+    "quality": "good"
+  },
+
   "Besan Chilla": {
     "protein": 10,
     "type": "breakfast",
@@ -41,15 +107,27 @@
     "quality": "excellent"
   },
 
-  "Milk": {
-    "protein": 6,
-    "type": "dairy",
+  "Paneer Chilla": {
+    "protein": 15,
+    "type": "breakfast",
+    "quality": "high"
+  },
+
+  "Dalia": {
+    "protein": 5,
+    "type": "breakfast",
     "quality": "moderate"
   },
 
-  "Roasted Chana": {
-    "protein": 9,
-    "type": "snack",
-    "quality": "good"
+  "Sattu": {
+    "protein": 10,
+    "type": "traditional",
+    "quality": "high"
+  },
+
+  "Tofu": {
+    "protein": 15,
+    "type": "soy",
+    "quality": "excellent"
   }
 }
