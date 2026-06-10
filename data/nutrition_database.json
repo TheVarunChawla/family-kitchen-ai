@@ -1,0 +1,55 @@
+{
+  "Moong Dal": {
+    "protein": 7,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Paneer": {
+    "protein": 18,
+    "type": "dairy",
+    "quality": "high"
+  },
+
+  "Dahi": {
+    "protein": 6,
+    "type": "dairy",
+    "quality": "moderate"
+  },
+
+  "Soya Granules": {
+    "protein": 25,
+    "type": "soy",
+    "quality": "excellent"
+  },
+
+  "Sprouts": {
+    "protein": 8,
+    "type": "plant",
+    "quality": "good"
+  },
+
+  "Besan Chilla": {
+    "protein": 10,
+    "type": "breakfast",
+    "quality": "good"
+  },
+
+  "Moong Chilla": {
+    "protein": 12,
+    "type": "breakfast",
+    "quality": "excellent"
+  },
+
+  "Milk": {
+    "protein": 6,
+    "type": "dairy",
+    "quality": "moderate"
+  },
+
+  "Roasted Chana": {
+    "protein": 9,
+    "type": "snack",
+    "quality": "good"
+  }
+}
