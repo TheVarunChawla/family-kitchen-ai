@@ -48,6 +48,62 @@ def calculate_day_protein(day_plan):
 
     return total_protein
 
+def optimize_low_protein_days(plan):
+    """
+    Check every day and improve low protein days.
+    Target: minimum 30g protein per day.
+    """
+
+    TARGET_PROTEIN = 30
+
+    for day, meals in plan.items():
+
+        current_protein = calculate_day_protein(meals)
+
+        if current_protein < TARGET_PROTEIN:
+
+            print(
+                f"Improving {day}: {current_protein}g protein"
+            )
+
+            # Upgrade breakfast first
+            if meals["breakfast"] in [
+                "Poha",
+                "Upma",
+                "Dalia",
+                "Aloo Paratha",
+                "Gobhi Paratha"
+            ]:
+
+                meals["breakfast"] = random.choice([
+                    "Moong Chilla",
+                    "Paneer Chilla",
+                    "Besan Chilla"
+                ])
+
+            # Recalculate after breakfast improvement
+            current_protein = calculate_day_protein(meals)
+
+
+            # Still low? Upgrade protein add
+            if current_protein < TARGET_PROTEIN:
+
+                meals["protein_add"] = random.choice([
+                    "Soya Granules",
+                    "Paneer",
+                    "Hung Curd"
+                ])
+
+
+            # Final check
+            final_score = calculate_day_protein(meals)
+
+            print(
+                f"{day} improved to {final_score}g protein"
+            )
+
+    return plan
+
 def load_data():
     with open("data/family_profile.json") as f:
         profile = json.load(f)
