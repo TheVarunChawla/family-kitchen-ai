@@ -34,17 +34,20 @@ def optimize_low_protein_days(plan):
 def load_data():
     with open("data/family_profile.json") as f:
         profile = json.load(f)
+
     with open("data/seasonal_vegetables.json") as f:
         seasonal = json.load(f)
+
     with open("data/protein_options.json") as f:
         protein = json.load(f)
-    return profile, seasonal, protein
 
-def get_current_month():
-    return datetime.now().strftime("%B")
+    with open("data/nutrition_database.json") as f:
+        nutrition = json.load(f)
+
+    return profile, seasonal, protein, nutrition
 
 def generate_weekly_plan():
-    profile, seasonal, protein_data = load_data()
+    profile, seasonal, protein_data, nutrition_db = load_data()
     month = get_current_month()
     vegetables = seasonal.get(month, seasonal["June"])
     protein_options = [p["name"] for p in protein_data["daily_protein_options"]]
