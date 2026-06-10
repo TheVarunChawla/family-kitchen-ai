@@ -27,6 +27,27 @@ PROTEIN_VALUES = {
     "Peanuts": 8
 }
 
+def calculate_day_protein(day_plan):
+    """
+    Calculate total protein for a single day
+    by scanning breakfast, dinner and protein add.
+    """
+
+    total_protein = 0
+
+    for meal in [
+        day_plan["breakfast"],
+        day_plan["dinner"],
+        day_plan["protein_add"]
+    ]:
+
+        for food, protein in PROTEIN_VALUES.items():
+
+            if food.lower() in meal.lower():
+                total_protein += protein
+
+    return total_protein
+
 def load_data():
     with open("data/family_profile.json") as f:
         profile = json.load(f)
