@@ -6,6 +6,27 @@ import json
 import random
 from datetime import datetime
 
+# Protein intelligence database
+PROTEIN_VALUES = {
+    "Moong Chilla": 12,
+    "Paneer Chilla": 14,
+    "Besan Chilla": 10,
+    "Paneer": 18,
+    "Soya Granules": 25,
+    "Hung Curd": 11,
+    "Sprouts": 8,
+    "Dahi": 6,
+    "Chana Dal": 13,
+    "Moong Dal": 7,
+    "Masoor Dal": 9,
+    "Mixed Dal": 9,
+    "Arhar Dal": 8,
+    "Rajma": 13,
+    "Chole": 14,
+    "Roasted Chana": 9,
+    "Peanuts": 8
+}
+
 def load_data():
     with open("data/family_profile.json") as f:
         profile = json.load(f)
