@@ -3,7 +3,7 @@ name: Parivaar Nutrition AI — Weekly Report
 on:
   schedule:
     - cron: '0 4 * * 0'   # Every Sunday 4:00 AM UTC = 9:30 AM IST
-  workflow_dispatch:        # Also allow manual trigger
+  workflow_dispatch:
 
 jobs:
   nutrition-report:
@@ -19,22 +19,51 @@ jobs:
           python-version: "3.11"
 
       - name: Install Dependencies
-        run: pip install pillow
+        run: |
+          pip install pillow
 
       - name: Generate Weekly Meal Plan (JSON)
-        run: python scripts/meal_engine.py
+        run: |
+          python scripts/meal_engine.py
 
       - name: Generate Image 1 — Meal Plan Card
-        run: python scripts/generate_meal_card.py
+        run: |
+          python scripts/generate_meal_card.py
 
       - name: Generate Image 2 — Shopping List
-        run: python scripts/generate_shopping_card.py
+        run: |
+          python scripts/generate_shopping_card.py
 
       - name: Generate Image 3 — Health Recommendations
-        run: python scripts/generate_health_card.py
+        run: |
+          python scripts/generate_health_card.py
 
       - name: Generate Image 4 — Protein Score
-        run: python scripts/generate_protein_card.py
+        run: |
+          python scripts/generate_protein_card.py
+
+      # DEBUG STEP ADDED
+      - name: Debug Generated Files
+        run: |
+          echo "========================="
+          echo "Current Directory"
+          echo "========================="
+          pwd
+
+          echo "========================="
+          echo "Root Files"
+          echo "========================="
+          ls -la
+
+          echo "========================="
+          echo "Data Folder"
+          echo "========================="
+          ls -la data/
+
+          echo "========================="
+          echo "Scripts Folder"
+          echo "========================="
+          ls -la scripts/
 
       - name: Send Intro Message
         run: |
