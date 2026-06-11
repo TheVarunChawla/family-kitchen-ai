@@ -125,18 +125,28 @@ def analyze_week(plan):
 
 if __name__ == "__main__":
 
-    with open("data/weekly_meal_plan.json") as f:
+    # Load existing weekly report
+    with open("data/weekly_meal_plan.json", "r") as f:
         data = json.load(f)
 
 
+    # Run AI health analysis
     report = analyze_week(
         data["plan"]
     )
 
 
-    print(
-        json.dumps(
-            report,
+    # Add health analysis into main JSON
+    data["health_analysis"] = report
+
+
+    # Save updated weekly report
+    with open("data/weekly_meal_plan.json", "w") as f:
+        json.dump(
+            data,
+            f,
             indent=2
         )
-    )
+
+
+    print("✅ Health analysis added to weekly_meal_plan.json")
