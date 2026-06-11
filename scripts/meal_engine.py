@@ -3,6 +3,9 @@ import json
 import random
 from datetime import datetime
 
+def get_current_month():
+    return datetime.now().strftime("%B")
+
 def calculate_day_protein(day_plan, nutrition_db):
     total_protein = 0
 
