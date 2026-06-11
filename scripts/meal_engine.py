@@ -3,14 +3,6 @@ import json
 import random
 from datetime import datetime
 
-PROTEIN_VALUES = {
-    "Moong Chilla": 12, "Paneer Chilla": 14, "Besan Chilla": 10,
-    "Paneer": 18, "Soya Granules": 25, "Hung Curd": 11,
-    "Sprouts": 8, "Dahi": 6, "Chana Dal": 13, "Moong Dal": 7,
-    "Masoor Dal": 9, "Mixed Dal": 9, "Arhar Dal": 8,
-    "Rajma": 13, "Chole": 14, "Roasted Chana": 9, "Peanuts": 8
-}
-
 def calculate_day_protein(day_plan, nutrition_db):
     total_protein = 0
 
@@ -65,7 +57,7 @@ def generate_weekly_plan():
     weekend_breakfast = profile["breakfast_weekend"]
     dal_options = profile["dal_options"]
     high_protein_breakfast = ["Moong Chilla","Paneer Chilla"]
-    low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha"]
+    low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]
     high_protein_adds      = ["Paneer","Soya Granules","Hung Curd","Sprouts"]
     plan = {}
     breakfast_count  = {}
@@ -126,7 +118,7 @@ def generate_weekly_plan():
             "protein_add": protein_add
         }
 
-    plan = optimize_low_protein_days(plan)
+    plan = optimize_low_protein_days(plan, nutrition_db)
     return plan, month, vegetables
 
 def generate_shopping_list(plan, vegetables):
