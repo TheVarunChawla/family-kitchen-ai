@@ -26,6 +26,10 @@ jobs:
         run: |
           python scripts/meal_engine.py
 
+      - name: Analyze Weekly Health Intelligence
+        run: |
+          python scripts/health_analyzer.py
+
       - name: Generate Image 1 — Meal Plan Card
         run: |
           python scripts/generate_meal_card.py
