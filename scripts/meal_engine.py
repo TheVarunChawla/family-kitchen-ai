@@ -28,14 +28,14 @@ def calculate_day_protein(day_plan, nutrition_db):
 
     return total_protein
 
-def optimize_low_protein_days(plan):
+def optimize_low_protein_days(plan, nutrition_db):
     TARGET_PROTEIN = 30
     for day, meals in plan.items():
-        current_protein = calculate_day_protein(meals)
+        current_protein = calculate_day_protein(meals, nutrition_db)
         if current_protein < TARGET_PROTEIN:
             if meals["breakfast"] in ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]:
                 meals["breakfast"] = random.choice(["Moong Chilla","Paneer Chilla","Besan Chilla"])
-            current_protein = calculate_day_protein(meals)
+            current_protein = calculate_day_protein(meals, nutrition_db)
             if current_protein < TARGET_PROTEIN:
                 meals["protein_add"] = random.choice(["Soya Granules","Paneer","Hung Curd"])
     return plan
