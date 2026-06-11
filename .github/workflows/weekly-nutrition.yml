@@ -46,6 +46,10 @@ jobs:
         run: |
           python scripts/generate_protein_card.py
 
+      - name: Generate Image 5 — AI Health Intelligence
+        run: |
+            python scripts/generate_ai_health_card.py
+
       # DEBUG STEP ADDED
       - name: Debug Generated Files
         run: |
@@ -103,3 +107,10 @@ jobs:
           -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
           -F photo="@protein_card.png" \
           -F caption="💪 Protein Score Card"
+  
+      - name: Send Image 5 — AI Health Intelligence
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          -F chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -F photo="@ai_health_report.png" \
+          -F caption="🧠 AI Weekly Health Intelligence Report."
