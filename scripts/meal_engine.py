@@ -137,16 +137,12 @@ def generate_shopping_list(plan, vegetables):
             "protein_sources": sorted(proteins), "kitchen_essentials": essentials}
 
 def calculate_protein_score(plan):
-    protein_data = {
-        "Hung Curd": 11, "Paneer": 18, "Roasted Chana": 19, "Soya Granules": 52,
-        "Sprouts": 9, "Moong Dal": 24, "Peanuts": 26, "Dahi": 4,
-        "Mixed Dal": 9, "Arhar Dal": 8, "Masoor Dal": 9, "Chana Dal": 13
-    }
-    weekly_adds = [day["protein_add"] for day in plan.values()]
-    total = sum(protein_data.get(p, 8) for p in weekly_adds)
-    avg_daily = total // 7
-    score = min(10, round(avg_daily / 8))
-    return score, avg_daily
+    """
+    Protein score is calculated by generate_protein_card.py
+    using the central nutrition_database.json.
+    This function remains only for backward compatibility.
+    """
+    return 0, 0
 
 def generate_health_tips(plan):
     tips = {
