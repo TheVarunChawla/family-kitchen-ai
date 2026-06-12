@@ -190,7 +190,10 @@ def generate_health_tips(plan):
 if __name__ == "__main__":
     plan, month, veg = generate_weekly_plan()
     shopping = generate_shopping_list(plan, veg)
-    score, avg = calculate_protein_score(plan)
+    score, avg, daily_protein = calculate_protein_score(
+    plan,
+    nutrition_db
+)
     tips, family_tip = generate_health_tips(plan)
     with open("data/weekly_meal_plan.json", "w") as f:
         json.dump({"month": month, "plan": plan, "shopping": shopping,
