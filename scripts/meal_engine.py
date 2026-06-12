@@ -122,7 +122,7 @@ def generate_weekly_plan():
         }
 
     plan = optimize_low_protein_days(plan, nutrition_db)
-    return plan, month, vegetables
+    return plan, month, vegetables, nutrition_db
 
 def generate_shopping_list(plan, vegetables):
     sabzis, dals, proteins = set(), set(), set()
@@ -188,7 +188,7 @@ def generate_health_tips(plan):
     return tips, family_tip
 
 if __name__ == "__main__":
-    plan, month, veg = generate_weekly_plan()
+    plan, month, veg, nutrition_db = generate_weekly_plan()
     shopping = generate_shopping_list(plan, veg)
     score, avg, daily_protein = calculate_protein_score(
     plan,
