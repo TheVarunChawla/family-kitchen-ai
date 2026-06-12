@@ -139,13 +139,41 @@ def generate_shopping_list(plan, vegetables):
     return {"vegetables": sorted(sabzis), "dals_legumes": sorted(dals),
             "protein_sources": sorted(proteins), "kitchen_essentials": essentials}
 
-def calculate_protein_score(plan):
+def calculate_protein_score(plan, nutrition_db):
     """
-    Protein score is calculated by generate_protein_card.py
-    using the central nutrition_database.json.
-    This function remains only for backward compatibility.
+    Calculate weekly protein score using complete day protein:
+    breakfast + dinner + protein boosters.
     """
-    return 0, 0
+
+    daily_protein = {}
+    total_week_protein = 0
+
+    for day, meals in plan.items():
+        protein = calculate_day_protein(
+            meals,
+            nutrition_db
+        )
+
+        daily_protein[day] = protein
+        total_week_protein += protein
+
+    average_daily_protein = round(
+        total_week_protein / len(plan),
+        1
+    )
+
+    # Protein score out of 10
+    # 60g average daily protein = 10/10
+    score = min(
+        10,
+        round((average_daily_protein / 60) * 10, 1)
+    )
+
+    return (
+        score,
+        average_daily_protein,
+        daily_protein
+    )
 
 def generate_health_tips(plan):
     tips = {
