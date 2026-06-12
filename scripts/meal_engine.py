@@ -198,5 +198,6 @@ if __name__ == "__main__":
     with open("data/weekly_meal_plan.json", "w") as f:
         json.dump({"month": month, "plan": plan, "shopping": shopping,
                    "protein_score": score, "protein_avg_daily_g": avg,
+                   "daily_protein": daily_protein,
                    "health_tips": tips, "family_tip": family_tip}, f, indent=2)
     print(f"✅ Weekly plan generated for {month}")
