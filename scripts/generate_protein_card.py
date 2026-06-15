@@ -1,8 +1,8 @@
 """
 Image 4: Protein Score Card
 Reads weekly_meal_plan.json + nutrition_database.json
-Detects protein foods across ALL meal sections
-Calculates real weekly protein points → realistic score out of 10
+Detects protein foods in scored meal sections
+Calculates real weekly protein points -> realistic score out of 10
 """
 from PIL import Image, ImageDraw, ImageFont
 import json
@@ -18,7 +18,7 @@ GOLD      = "#FFB703"
 GREEN     = "#2D6A4F"
 GREEN_LT  = "#B7E4C7"
 
-W, H = 900, 1050
+W, H = 900, 1120
 
 def font(size, bold=False):
     try:
@@ -42,10 +42,10 @@ def detect_protein_in_text(text, nutrition_db):
 
 def calculate_weekly_protein(plan, nutrition_db):
     """
-    Go through every day, every meal section.
+    Go through every day and the sections counted by the meal engine.
     Detect protein foods. Sum up total weekly protein points.
     """
-    sections = ["breakfast", "lunch", "dinner", "protein_add"]
+    sections = ["breakfast", "dinner", "protein_add"]
     weekly_total = 0
     daily_totals = {}
     detected_log = []  # (day, section, food, protein_g)
@@ -105,7 +105,6 @@ def generate():
     weekly_total, daily_totals, detected_log = calculate_weekly_protein(plan, nutrition_db)
     score     = calculate_score(weekly_total)
     avg_daily = round(weekly_total / 7)
-    score_int = int(score)
 
     # Which foods were detected and how many times
     food_counts = {}
@@ -122,14 +121,14 @@ def generate():
 
     # Header
     draw.rectangle([0, 0, W, 100], fill=HEADER_BG)
-    draw.text((W//2, 36), "💪  Weekly Protein Score", font=font(30, True), fill=TEXT_LITE, anchor="mm")
-    draw.text((W//2, 74), f"{month}  ·  Real Protein Tracking from Meals", font=font(16), fill="#90E0EF", anchor="mm")
+    draw.text((W//2, 36), "Weekly Protein Score", font=font(30, True), fill=TEXT_LITE, anchor="mm")
+    draw.text((W//2, 74), f"{month}  |  Real Protein Tracking from Meals", font=font(16), fill="#90E0EF", anchor="mm")
 
     # Score circle
     cx, cy, r = W//2, 215, 88
     draw.ellipse([cx-r, cy-r, cx+r, cy+r], fill=HEADER_BG)
     draw.ellipse([cx-r+4, cy-r+4, cx+r-4, cy+r-4], fill="#012A5E")
-    draw.text((cx, cy-16), f"{score_int}", font=font(58, True), fill=GOLD, anchor="mm")
+    draw.text((cx, cy-16), f"{score}", font=font(52, True), fill=GOLD, anchor="mm")
     draw.text((cx, cy+36), "/ 10", font=font(20), fill="#90E0EF", anchor="mm")
     draw.text((cx, cy+70),  "Weekly Score", font=font(14), fill=TEXT_LITE, anchor="mm")
 
@@ -153,24 +152,24 @@ def generate():
     # Top protein sources detected
     y += 5
     draw.rectangle([40, y, W-40, y+44], fill=HEADER_BG)
-    draw.text((W//2, y+22), "🔍  Top Protein Sources Detected This Week",
+    draw.text((W//2, y+22), "Top Protein Sources Detected This Week",
               font=font(16, True), fill=TEXT_LITE, anchor="mm")
     y += 52
     for i, (food, info) in enumerate(top_foods):
         col = 55 + (i % 2) * 420
         row = y + (i // 2) * 42
-        draw.text((col, row), f"✓  {food}", font=font(15, True), fill=GREEN)
+        draw.text((col, row), f"- {food}", font=font(15, True), fill=GREEN)
         draw.text((col+260, row), f"{info['total_g']}g over {info['count']}x",
                   font=font(14), fill=TEXT_MED)
 
     # Footer
     draw.rectangle([0, H-50, W, H], fill=HEADER_BG)
     draw.text((W//2, H-25),
-              "Parivaar Nutrition AI  ·  Protein detected from all meal sections",
+              "Parivaar Nutrition AI  |  Protein detected from breakfast, dinner, and boosters",
               font=font(13), fill="#90E0EF", anchor="mm")
 
     img.save("protein_card.png")
-    print(f"✅ protein_card.png saved  |  Score: {score}/10  |  Weekly: {weekly_total}g  |  Avg: {avg_daily}g/day")
+    print(f"protein_card.png saved  |  Score: {score}/10  |  Weekly: {weekly_total}g  |  Avg: {avg_daily}g/day")
     print(f"   Detected {len(detected_log)} protein matches across {len(plan)} days")
 
 if __name__ == "__main__":

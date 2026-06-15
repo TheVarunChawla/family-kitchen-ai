@@ -25,14 +25,28 @@ def calculate_day_protein(day_plan, nutrition_db):
 
 def optimize_low_protein_days(plan, nutrition_db):
     TARGET_PROTEIN = 30
+    fallback_boosters = ["Soya Granules", "Paneer", "Hung Curd"]
+
     for day, meals in plan.items():
         current_protein = calculate_day_protein(meals, nutrition_db)
         if current_protein < TARGET_PROTEIN:
             if meals["breakfast"] in ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]:
                 meals["breakfast"] = random.choice(["Moong Chilla","Paneer Chilla","Besan Chilla"])
+
             current_protein = calculate_day_protein(meals, nutrition_db)
             if current_protein < TARGET_PROTEIN:
-                meals["protein_add"] = random.choice(["Soya Granules","Paneer","Hung Curd"])
+                ranked_boosters = sorted(
+                    fallback_boosters,
+                    key=lambda item: nutrition_db.get(item, {}).get("protein", 0),
+                    reverse=True
+                )
+                meals["protein_add"] = ranked_boosters[0]
+                for booster in ranked_boosters:
+                    boosted_meals = {**meals, "protein_add": booster}
+                    if calculate_day_protein(boosted_meals, nutrition_db) >= TARGET_PROTEIN:
+                        meals["protein_add"] = booster
+                        break
+
     return plan
 
 def load_data():
@@ -191,13 +205,13 @@ if __name__ == "__main__":
     plan, month, veg, nutrition_db = generate_weekly_plan()
     shopping = generate_shopping_list(plan, veg)
     score, avg, daily_protein = calculate_protein_score(
-    plan,
-    nutrition_db
-)
+        plan,
+        nutrition_db
+    )
     tips, family_tip = generate_health_tips(plan)
     with open("data/weekly_meal_plan.json", "w") as f:
         json.dump({"month": month, "plan": plan, "shopping": shopping,
                    "protein_score": score, "protein_avg_daily_g": avg,
                    "daily_protein": daily_protein,
                    "health_tips": tips, "family_tip": family_tip}, f, indent=2)
-    print(f"✅ Weekly plan generated for {month}")
+    print(f"Weekly plan generated for {month}")
