@@ -96,5 +96,46 @@
     "Varun": "Add Soya Granules to sabzi 2x this week for protein boost",
     "Wife": "Include Dahi daily \u2014 good for gut health"
   },
-  "family_tip": "Replace evening biscuits with Roasted Chana or Peanuts"
+  "family_tip": "Replace evening biscuits with Roasted Chana or Peanuts",
+  "health_analysis": {
+    "health_score": 85,
+    "grade": "Very Good",
+    "average_daily_protein_g": 50.1,
+    "high_protein_days": 7,
+    "strong_protein_days": 4,
+    "low_protein_days": 0,
+    "diabetes_friendly_breakfast_days": 7,
+    "high_carb_breakfast_days": 0,
+    "vegetable_variety_count": 5,
+    "breakfast_variety_count": 3,
+    "booster_variety_count": 4,
+    "component_scores": {
+      "protein": 29.6,
+      "diabetes": 20,
+      "vegetables": 12.5,
+      "bp_support": 7.1,
+      "protein_boosters": 6.9,
+      "variety": 12.9,
+      "repeat_penalty": 4
+    },
+    "achievements": [
+      "All days stayed above the minimum protein floor",
+      "Most days reached a strong vegetarian protein range",
+      "Breakfasts were diabetes-friendly all week",
+      "Good seasonal vegetable variety"
+    ],
+    "alerts": [],
+    "focus_areas": [
+      "Rotate protein boosters more evenly",
+      "Rotate high-protein breakfasts more evenly"
+    ],
+    "member_recommendations": {
+      "Dad": "Keep a protein booster daily; aim for one extra dal, paneer, or soya serving.",
+      "Mom": "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent.",
+      "Sister1": "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent.",
+      "Sister2": "Maintain the current variety and include curd or sprouts regularly.",
+      "Varun": "Keep a protein booster daily; aim for one extra dal, paneer, or soya serving.",
+      "Wife": "Maintain the current variety and include curd or sprouts regularly."
+    }
+  }
 }
