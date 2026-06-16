@@ -293,7 +293,7 @@ def build_action_plan(
     ]
     if light_days:
         actions.append(
-            f"Add paneer, hung curd, or roasted chana on {format_days(light_days)} to lift lighter protein days."
+            f"Add an extra curd, sprouts, or roasted chana snack on {format_days(light_days)} to lift lighter protein days."
         )
 
     if max_booster_repeat > 3:
@@ -326,7 +326,7 @@ def build_member_recommendations(
         if "Muscle Loss" in conditions or priority == "high":
             if avg_protein < FAMILY_AVG_PROTEIN_TARGET:
                 advice.append(
-                    f"Use paneer, soya, or hung curd on {format_days(lightest_protein_days)} for extra muscle support."
+                    f"Use an extra curd, sprouts, or paneer snack on {format_days(lightest_protein_days)} for muscle support."
                 )
             else:
                 advice.append("Protein trend is strong; keep daily boosters and light strength work consistent.")

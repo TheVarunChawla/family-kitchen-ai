@@ -23,29 +23,147 @@ def calculate_day_protein(day_plan, nutrition_db):
 
     return total_protein
 
+
+def choose_least_used(options, usage_counts, max_count=None):
+    choices = [
+        option
+        for option in options
+        if max_count is None or usage_counts.get(option, 0) < max_count
+    ]
+    if not choices:
+        choices = options
+
+    min_count = min(usage_counts.get(option, 0) for option in choices)
+    least_used = [
+        option
+        for option in choices
+        if usage_counts.get(option, 0) == min_count
+    ]
+    return random.choice(least_used)
+
+
+def choose_protein_booster(
+    breakfast,
+    dinner,
+    protein_options,
+    protein_count,
+    nutrition_db,
+    low_protein_breakfast,
+    high_protein_adds,
+):
+    protein_floor = 40
+    max_repeat = 2
+    candidate_pool = [
+        protein
+        for protein in protein_options
+        if protein_count.get(protein, 0) < max_repeat
+    ] or protein_options
+
+    if breakfast in low_protein_breakfast:
+        candidate_pool = [
+            protein
+            for protein in candidate_pool
+            if protein in high_protein_adds
+        ] or high_protein_adds
+
+    if dinner in ["Rajma", "Chole"]:
+        preferred = ["Dahi", "Hung Curd", "Sprouts", "Roasted Chana"]
+        candidate_pool = [
+            protein
+            for protein in candidate_pool
+            if protein in preferred
+        ] or candidate_pool
+
+    ranked = sorted(
+        candidate_pool,
+        key=lambda item: (
+            protein_count.get(item, 0),
+            -nutrition_db.get(item, {}).get("protein", 0),
+        )
+    )
+
+    for booster in ranked:
+        candidate_day = {
+            "breakfast": breakfast,
+            "dinner": f"{dinner} + Roti",
+            "protein_add": booster,
+        }
+        if calculate_day_protein(candidate_day, nutrition_db) >= protein_floor:
+            return booster
+
+    return ranked[0]
+
+
 def optimize_low_protein_days(plan, nutrition_db):
-    TARGET_PROTEIN = 30
-    fallback_boosters = ["Soya Granules", "Paneer", "Hung Curd"]
+    TARGET_PROTEIN = 35
+    replacement_breakfasts = ["Moong Chilla", "Paneer Chilla", "Besan Chilla"]
+    fallback_boosters = ["Paneer", "Soya Granules", "Hung Curd", "Roasted Chana", "Sprouts"]
+    low_protein_breakfasts = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]
+    breakfast_count = {}
+    booster_count = {}
+
+    for meals in plan.values():
+        breakfast_count[meals["breakfast"]] = breakfast_count.get(meals["breakfast"], 0) + 1
+        booster_count[meals["protein_add"]] = booster_count.get(meals["protein_add"], 0) + 1
 
     for day, meals in plan.items():
         current_protein = calculate_day_protein(meals, nutrition_db)
         if current_protein < TARGET_PROTEIN:
-            if meals["breakfast"] in ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]:
-                meals["breakfast"] = random.choice(["Moong Chilla","Paneer Chilla","Besan Chilla"])
+            if meals["breakfast"] in low_protein_breakfasts:
+                old_breakfast = meals["breakfast"]
+                breakfast_count[old_breakfast] -= 1
+                meals["breakfast"] = choose_least_used(
+                    replacement_breakfasts,
+                    breakfast_count,
+                    2
+                )
+                breakfast_count[meals["breakfast"]] = breakfast_count.get(meals["breakfast"], 0) + 1
 
             current_protein = calculate_day_protein(meals, nutrition_db)
             if current_protein < TARGET_PROTEIN:
+                booster_pool = [
+                    booster
+                    for booster in fallback_boosters
+                    if (
+                        booster_count.get(booster, 0) < 3
+                        and (
+                            booster != "Soya Granules"
+                            or booster_count.get(booster, 0) < 2
+                        )
+                    )
+                ] or fallback_boosters
                 ranked_boosters = sorted(
-                    fallback_boosters,
-                    key=lambda item: nutrition_db.get(item, {}).get("protein", 0),
-                    reverse=True
+                    booster_pool,
+                    key=lambda item: (
+                        booster_count.get(item, 0),
+                        -nutrition_db.get(item, {}).get("protein", 0),
+                    )
                 )
+                old_booster = meals["protein_add"]
+                booster_count[old_booster] = max(booster_count.get(old_booster, 0) - 1, 0)
                 meals["protein_add"] = ranked_boosters[0]
+                target_reached = False
                 for booster in ranked_boosters:
                     boosted_meals = {**meals, "protein_add": booster}
                     if calculate_day_protein(boosted_meals, nutrition_db) >= TARGET_PROTEIN:
                         meals["protein_add"] = booster
+                        target_reached = True
                         break
+
+                if not target_reached and booster_pool != fallback_boosters:
+                    ranked_boosters = sorted(
+                        fallback_boosters,
+                        key=lambda item: (
+                            booster_count.get(item, 0),
+                            -nutrition_db.get(item, {}).get("protein", 0),
+                        )
+                    )
+                    for booster in ranked_boosters:
+                        boosted_meals = {**meals, "protein_add": booster}
+                        if calculate_day_protein(boosted_meals, nutrition_db) >= TARGET_PROTEIN:
+                            meals["protein_add"] = booster
+                            break
+                booster_count[meals["protein_add"]] = booster_count.get(meals["protein_add"], 0) + 1
 
     return plan
 
@@ -73,9 +191,9 @@ def generate_weekly_plan():
     weekday_breakfast = profile["breakfast_weekday"]
     weekend_breakfast = profile["breakfast_weekend"]
     dal_options = profile["dal_options"]
-    high_protein_breakfast = ["Moong Chilla","Paneer Chilla"]
+    high_protein_breakfast = ["Moong Chilla","Paneer Chilla","Besan Chilla"]
     low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]
-    high_protein_adds      = ["Paneer","Soya Granules","Hung Curd","Sprouts"]
+    high_protein_adds      = ["Paneer","Soya Granules","Hung Curd","Sprouts","Roasted Chana"]
     plan = {}
     breakfast_count  = {}
     vegetable_count  = {}
@@ -86,24 +204,28 @@ def generate_weekly_plan():
     for day in days:
         # BREAKFAST
         if day in ["Saturday","Sunday"]:
-            breakfast = random.choice(weekend_breakfast)
+            if high_breakfast_days < 4:
+                breakfast = choose_least_used(high_protein_breakfast, breakfast_count, 2)
+                high_breakfast_days += 1
+            else:
+                breakfast = choose_least_used(weekend_breakfast, breakfast_count, 1)
         else:
-            if high_breakfast_days < 3:
+            if high_breakfast_days < 4:
                 choices = [b for b in weekday_breakfast
                            if b in high_protein_breakfast and breakfast_count.get(b, 0) < 2]
                 if choices:
-                    breakfast = random.choice(choices)
+                    breakfast = choose_least_used(choices, breakfast_count)
                     high_breakfast_days += 1
                 else:
-                    breakfast = random.choice(weekday_breakfast)
+                    breakfast = choose_least_used(weekday_breakfast, breakfast_count, 2)
             else:
                 choices = [b for b in weekday_breakfast if breakfast_count.get(b, 0) < 2]
-                breakfast = random.choice(choices if choices else weekday_breakfast)
+                breakfast = choose_least_used(choices if choices else weekday_breakfast, breakfast_count)
         breakfast_count[breakfast] = breakfast_count.get(breakfast, 0) + 1
 
         # LUNCH
         available_veg = [v for v in vegetables if vegetable_count.get(v, 0) < 2] or vegetables
-        sabzi = random.choice(available_veg)
+        sabzi = choose_least_used(available_veg, vegetable_count)
         vegetable_count[sabzi] = vegetable_count.get(sabzi, 0) + 1
 
         # DINNER
@@ -115,17 +237,19 @@ def generate_weekly_plan():
             dinner = "Kadhi"
         else:
             available_dals = [d for d in dal_options if dinner_count.get(d, 0) < 2] or dal_options
-            dinner = random.choice(available_dals)
+            dinner = choose_least_used(available_dals, dinner_count)
         dinner_count[dinner] = dinner_count.get(dinner, 0) + 1
 
         # PROTEIN ADD
-        if breakfast in low_protein_breakfast:
-            choices = [p for p in protein_options if p in high_protein_adds and protein_count.get(p, 0) < 2]
-        else:
-            choices = [p for p in protein_options if protein_count.get(p, 0) < 2]
-        if not choices:
-            choices = protein_options
-        protein_add = random.choice(choices)
+        protein_add = choose_protein_booster(
+            breakfast,
+            dinner,
+            protein_options,
+            protein_count,
+            nutrition_db,
+            low_protein_breakfast,
+            high_protein_adds,
+        )
         protein_count[protein_add] = protein_count.get(protein_add, 0) + 1
 
         plan[day] = {
