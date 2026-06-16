@@ -129,12 +129,17 @@
       "Rotate protein boosters more evenly",
       "Rotate high-protein breakfasts more evenly"
     ],
+    "weekly_action_plan": [
+      "On Tuesday and Friday, keep dinner salt light and add a 10-minute walk after eating.",
+      "Add paneer, hung curd, or roasted chana on Thursday and Sunday to lift lighter protein days.",
+      "Rotate Soya Granules with Paneer, Hung Curd, Sprouts, or Roasted Chana."
+    ],
     "member_recommendations": {
-      "Dad": "Keep a protein booster daily; aim for one extra dal, paneer, or soya serving.",
-      "Mom": "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent.",
-      "Sister1": "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent.",
+      "Dad": "Use paneer, soya, or hung curd on Thursday and Sunday for extra muscle support. Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent.",
+      "Mom": "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent. On Tuesday and Friday, keep salt, pickle, and namkeen low.",
+      "Sister1": "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent. Keep dinner portions lighter and add a post-dinner walk on most days.",
       "Sister2": "Maintain the current variety and include curd or sprouts regularly.",
-      "Varun": "Keep a protein booster daily; aim for one extra dal, paneer, or soya serving.",
+      "Varun": "Use paneer, soya, or hung curd on Thursday and Sunday for extra muscle support.",
       "Wife": "Maintain the current variety and include curd or sprouts regularly."
     }
   }

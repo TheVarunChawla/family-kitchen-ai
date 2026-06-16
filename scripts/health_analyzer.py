@@ -75,6 +75,14 @@ def extract_dinner_name(dinner):
     return dinner.replace(" + Roti", "").replace(" + Salad", "").strip()
 
 
+def format_days(days):
+    if not days:
+        return "no days"
+    if len(days) == 1:
+        return days[0]
+    return ", ".join(days[:-1]) + f" and {days[-1]}"
+
+
 def grade_for_score(score):
     if score >= 90:
         return "Excellent"
@@ -107,6 +115,10 @@ def analyze_week(data, family_profile, nutrition_db):
     low_protein_days = [day for day, grams in daily_protein.items() if grams < LOW_PROTEIN_TARGET]
     good_protein_days = [day for day, grams in daily_protein.items() if grams >= GOOD_PROTEIN_TARGET]
     strong_protein_days = [day for day, grams in daily_protein.items() if grams >= STRONG_PROTEIN_TARGET]
+    lightest_protein_days = [
+        day
+        for day, _ in sorted(daily_protein.items(), key=lambda item: item[1])[:2]
+    ]
 
     risky_breakfast_days = [
         day
@@ -123,6 +135,11 @@ def analyze_week(data, family_profile, nutrition_db):
         day
         for day in DAYS
         if day in plan and extract_dinner_name(plan[day]["dinner"]) in HIGH_BP_LIGHT_DINNERS
+    ]
+    heavier_legume_days = [
+        day
+        for day in DAYS
+        if day in plan and extract_dinner_name(plan[day]["dinner"]) in {"Rajma", "Chole"}
     ]
     high_quality_booster_days = [
         day
@@ -205,12 +222,20 @@ def analyze_week(data, family_profile, nutrition_db):
     if len(high_bp_light_dinner_days) < 4:
         focus_areas.append("Add more light dal or kadhi dinners for BP support")
 
+    action_plan = build_action_plan(
+        daily_protein,
+        risky_breakfast_days,
+        heavier_legume_days,
+        max_booster_repeat,
+        max_breakfast_repeat,
+    )
+
     member_recommendations = build_member_recommendations(
         family_profile,
         avg_protein,
-        len(risky_breakfast_days),
-        len(high_bp_light_dinner_days),
-        len(low_protein_days),
+        risky_breakfast_days,
+        heavier_legume_days,
+        lightest_protein_days,
     )
 
     return {
@@ -237,16 +262,58 @@ def analyze_week(data, family_profile, nutrition_db):
         "achievements": achievements,
         "alerts": alerts,
         "focus_areas": focus_areas,
+        "weekly_action_plan": action_plan,
         "member_recommendations": member_recommendations,
     }
+
+
+def build_action_plan(
+    daily_protein,
+    risky_breakfast_days,
+    heavier_legume_days,
+    max_booster_repeat,
+    max_breakfast_repeat,
+):
+    actions = []
+
+    if risky_breakfast_days:
+        actions.append(
+            f"On {format_days(risky_breakfast_days)}, pair the carb-heavy breakfast with curd, sprouts, or paneer."
+        )
+
+    if heavier_legume_days:
+        actions.append(
+            f"On {format_days(heavier_legume_days)}, keep dinner salt light and add a 10-minute walk after eating."
+        )
+
+    light_days = [
+        day
+        for day, grams in sorted(daily_protein.items(), key=lambda item: item[1])[:2]
+        if grams < STRONG_PROTEIN_TARGET
+    ]
+    if light_days:
+        actions.append(
+            f"Add paneer, hung curd, or roasted chana on {format_days(light_days)} to lift lighter protein days."
+        )
+
+    if max_booster_repeat > 3:
+        actions.append("Rotate Soya Granules with Paneer, Hung Curd, Sprouts, or Roasted Chana.")
+
+    if max_breakfast_repeat > 3:
+        actions.append("Rotate Paneer Chilla with Moong or Besan Chilla to improve breakfast variety.")
+
+    if not actions:
+        actions.append("Keep this plan steady and repeat the same protein-plus-vegetable structure next week.")
+
+    return actions[:3]
 
 
 def build_member_recommendations(
     family_profile,
     avg_protein,
-    high_carb_breakfast_count,
-    high_bp_light_dinner_count,
-    low_protein_day_count,
+    risky_breakfast_days,
+    heavier_legume_days,
+    lightest_protein_days,
 ):
     recommendations = {}
 
@@ -254,26 +321,39 @@ def build_member_recommendations(
         name = member["name"]
         conditions = set(member.get("conditions", []))
         priority = member.get("protein_priority", "normal")
+        advice = []
 
         if "Muscle Loss" in conditions or priority == "high":
             if avg_protein < FAMILY_AVG_PROTEIN_TARGET:
-                recommendations[name] = "Keep a protein booster daily; aim for one extra dal, paneer, or soya serving."
+                advice.append(
+                    f"Use paneer, soya, or hung curd on {format_days(lightest_protein_days)} for extra muscle support."
+                )
             else:
-                recommendations[name] = "Protein trend is strong; keep resistance exercise and daily boosters consistent."
-        elif "Diabetes" in conditions:
-            if high_carb_breakfast_count:
-                recommendations[name] = "Pair any poha, upma, or paratha with curd, sprouts, or paneer."
+                advice.append("Protein trend is strong; keep daily boosters and light strength work consistent.")
+
+        if "Diabetes" in conditions:
+            if risky_breakfast_days:
+                advice.append(
+                    f"On {format_days(risky_breakfast_days)}, pair breakfast with curd, sprouts, or paneer."
+                )
             else:
-                recommendations[name] = "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent."
-        elif "High BP" in conditions:
-            if high_bp_light_dinner_count < 4:
-                recommendations[name] = "Prefer lighter dal or kadhi dinners more often and keep pickles/namkeen low."
+                advice.append("Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent.")
+
+        if "High BP" in conditions:
+            if heavier_legume_days:
+                advice.append(
+                    f"On {format_days(heavier_legume_days)}, keep salt, pickle, and namkeen low."
+                )
             else:
-                recommendations[name] = "Dinner pattern supports BP; continue limiting salty snacks and pickles."
-        elif "Overweight" in conditions:
-            recommendations[name] = "Keep dinner portions lighter and add a post-dinner walk on most days."
-        else:
-            recommendations[name] = "Maintain the current variety and include curd or sprouts regularly."
+                advice.append("Dinner pattern supports BP; continue limiting salty snacks and pickles.")
+
+        if "Overweight" in conditions:
+            advice.append("Keep dinner portions lighter and add a post-dinner walk on most days.")
+
+        if not advice:
+            advice.append("Maintain the current variety and include curd or sprouts regularly.")
+
+        recommendations[name] = " ".join(advice[:2])
 
     return recommendations
 

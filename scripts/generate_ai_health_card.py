@@ -14,7 +14,7 @@ BLUE_LT = "#E8F3FB"
 BAR_BG = "#D8EEF7"
 BAR_FILL = "#0096C7"
 
-W, H = 900, 1450
+W, H = 900, 1600
 
 
 def font(size, bold=False):
@@ -58,6 +58,7 @@ def generate():
     achievements = health.get("achievements", [])
     alerts = health.get("alerts", [])
     focus_areas = health.get("focus_areas", [])
+    action_plan = health.get("weekly_action_plan", [])
     recommendations = health.get("member_recommendations", {})
     components = health.get("component_scores", {})
 
@@ -82,7 +83,16 @@ def generate():
     draw.text((720, 376), f"{health.get('diabetes_friendly_breakfast_days', 0)}/7", font=font(22, True), fill=HEADER_BG, anchor="mm")
     draw.text((720, 404), "Diabetes-Friendly Breakfasts", font=font(13), fill=TEXT_MED, anchor="mm")
 
-    draw.text((55, 455), "Score Components", font=font(19, True), fill=TEXT_DARK)
+    y = 455
+    draw.rectangle([40, y, W - 40, y + 42], fill=HEADER_BG)
+    draw.text((W // 2, y + 21), "Top Actions This Week", font=font(17, True), fill="white", anchor="mm")
+    y += 58
+    for item in action_plan[:3]:
+        y = draw_wrapped(draw, "- " + item, (65, y), 92, 25, TEXT_DARK, font(14, True))
+        y += 8
+
+    y += 20
+    draw.text((55, y), "Score Components", font=font(19, True), fill=TEXT_DARK)
     component_rows = [
         ("Protein", components.get("protein", 0), 35),
         ("Diabetes", components.get("diabetes", 0), 20),
@@ -91,7 +101,7 @@ def generate():
         ("Boosters", components.get("protein_boosters", 0), 8),
         ("Variety", components.get("variety", 0), 16),
     ]
-    y = 490
+    y += 35
     for i, (label, value, max_value) in enumerate(component_rows):
         x = 55 if i % 2 == 0 else 485
         if i and i % 2 == 0:
