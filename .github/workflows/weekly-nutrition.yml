@@ -50,29 +50,6 @@ jobs:
         run: |
             python scripts/generate_ai_health_card.py
 
-      # DEBUG STEP ADDED
-      - name: Debug Generated Files
-        run: |
-          echo "========================="
-          echo "Current Directory"
-          echo "========================="
-          pwd
-
-          echo "========================="
-          echo "Root Files"
-          echo "========================="
-          ls -la
-
-          echo "========================="
-          echo "Data Folder"
-          echo "========================="
-          ls -la data/
-
-          echo "========================="
-          echo "Scripts Folder"
-          echo "========================="
-          ls -la scripts/
-
       - name: Send Intro Message
         run: |
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
