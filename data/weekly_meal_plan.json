@@ -3,45 +3,45 @@
   "plan": {
     "Monday": {
       "breakfast": "Moong Chilla",
-      "lunch": "Parwal Sabzi + Roti",
-      "dinner": "Arhar Dal + Roti",
-      "protein_add": "Soya Granules"
+      "lunch": "Kakdi Peanut Raita + Roti",
+      "dinner": "Moong Dal + Roti",
+      "protein_add": "Peanuts"
     },
     "Tuesday": {
-      "breakfast": "Paneer Chilla",
-      "lunch": "Kakdi Sabzi + Roti",
+      "breakfast": "Besan Chilla",
+      "lunch": "Lauki Paneer Sabzi + Roti",
       "dinner": "Rajma + Roti",
-      "protein_add": "Sprouts"
+      "protein_add": "Hung Curd"
     },
     "Wednesday": {
-      "breakfast": "Besan Chilla",
-      "lunch": "Tori Sabzi + Roti",
-      "dinner": "Moong Dal + Roti",
-      "protein_add": "Soya Granules"
+      "breakfast": "Paneer Chilla",
+      "lunch": "Parwal Dahi Masala + Roti",
+      "dinner": "Chana Dal + Roti",
+      "protein_add": "Sprouts"
     },
     "Thursday": {
       "breakfast": "Moong Chilla",
-      "lunch": "Lauki Sabzi + Roti",
-      "dinner": "Mixed Dal + Roti",
-      "protein_add": "Paneer"
+      "lunch": "Tori Moong Dal Sabzi + Roti",
+      "dinner": "Masoor Dal + Roti",
+      "protein_add": "Soya Granules"
     },
     "Friday": {
       "breakfast": "Paneer Chilla",
-      "lunch": "Bhindi Sabzi + Roti",
+      "lunch": "Bhindi Besan Sabzi + Roti",
       "dinner": "Chole + Roti",
       "protein_add": "Roasted Chana"
     },
     "Saturday": {
       "breakfast": "Besan Chilla",
-      "lunch": "Kakdi Sabzi + Roti",
-      "dinner": "Masoor Dal + Roti",
+      "lunch": "Kakdi Dahi Raita + Roti",
+      "dinner": "Arhar Dal + Roti",
       "protein_add": "Paneer"
     },
     "Sunday": {
-      "breakfast": "Moong Chilla",
-      "lunch": "Parwal Sabzi + Roti",
+      "breakfast": "Besan Chilla",
+      "lunch": "Lauki Dahi Curry + Roti",
       "dinner": "Kadhi + Roti",
-      "protein_add": "Paneer"
+      "protein_add": "Soya Granules"
     }
   },
   "shopping": {
@@ -54,15 +54,19 @@
     ],
     "dals_legumes": [
       "Arhar Dal",
+      "Chana Dal",
       "Chole",
       "Kadhi",
       "Masoor Dal",
-      "Mixed Dal",
       "Moong Dal",
       "Rajma"
     ],
     "protein_sources": [
+      "Dahi",
+      "Hung Curd",
       "Paneer",
+      "Peanut",
+      "Peanuts",
       "Roasted Chana",
       "Soya Granules",
       "Sprouts"
@@ -78,16 +82,16 @@
       "Ginger-Garlic"
     ]
   },
-  "protein_score": 7.3,
-  "protein_avg_daily_g": 43.9,
+  "protein_score": 8.4,
+  "protein_avg_daily_g": 50.1,
   "daily_protein": {
-    "Monday": 45,
-    "Tuesday": 53,
-    "Wednesday": 42,
-    "Thursday": 39,
+    "Monday": 43,
+    "Tuesday": 52,
+    "Wednesday": 59,
+    "Thursday": 53,
     "Friday": 55,
-    "Saturday": 37,
-    "Sunday": 36
+    "Saturday": 42,
+    "Sunday": 47
   },
   "health_tips": {
     "Dad": "Add Roasted Chana as evening snack \u2014 helps muscle recovery",
@@ -97,48 +101,5 @@
     "Varun": "Add Soya Granules to sabzi 2x this week for protein boost",
     "Wife": "Include Dahi daily \u2014 good for gut health"
   },
-  "family_tip": "Replace evening biscuits with Roasted Chana or Peanuts",
-  "health_analysis": {
-    "health_score": 82,
-    "grade": "Very Good",
-    "average_daily_protein_g": 43.9,
-    "high_protein_days": 4,
-    "strong_protein_days": 2,
-    "low_protein_days": 0,
-    "diabetes_friendly_breakfast_days": 7,
-    "high_carb_breakfast_days": 0,
-    "vegetable_variety_count": 5,
-    "breakfast_variety_count": 3,
-    "booster_variety_count": 4,
-    "component_scores": {
-      "protein": 21.8,
-      "diabetes": 20,
-      "vegetables": 12.5,
-      "bp_support": 7.1,
-      "protein_boosters": 8.0,
-      "variety": 12.9,
-      "repeat_penalty": 0
-    },
-    "achievements": [
-      "All days stayed above the minimum protein floor",
-      "Breakfasts were diabetes-friendly all week",
-      "Good seasonal vegetable variety"
-    ],
-    "alerts": [],
-    "focus_areas": [
-      "Raise more days above 40g protein"
-    ],
-    "weekly_action_plan": [
-      "On Tuesday and Friday, keep dinner salt light and add a 10-minute walk after eating.",
-      "Add an extra curd, sprouts, or roasted chana snack on Sunday and Saturday to lift lighter protein days."
-    ],
-    "member_recommendations": {
-      "Dad": "Use an extra curd, sprouts, or paneer snack on Sunday and Saturday for muscle support. Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent.",
-      "Mom": "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent. On Tuesday and Friday, keep salt, pickle, and namkeen low.",
-      "Sister1": "Breakfast pattern is glucose-friendly; keep chilla and dal-based meals frequent. Keep dinner portions lighter and add a post-dinner walk on most days.",
-      "Sister2": "Maintain the current variety and include curd or sprouts regularly.",
-      "Varun": "Use an extra curd, sprouts, or paneer snack on Sunday and Saturday for muscle support.",
-      "Wife": "Maintain the current variety and include curd or sprouts regularly."
-    }
-  }
+  "family_tip": "Replace evening biscuits with Roasted Chana or Peanuts"
 }

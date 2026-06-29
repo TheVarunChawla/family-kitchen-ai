@@ -57,18 +57,14 @@ def detect_foods(text, nutrition_db):
 
 def calculate_day_protein(day_plan, nutrition_db):
     total = 0
-    for section in ["breakfast", "dinner", "protein_add"]:
+    for section in ["breakfast", "lunch", "dinner", "protein_add"]:
         for _, info in detect_foods(day_plan.get(section, ""), nutrition_db):
             total += info["protein"]
     return total
 
 
 def extract_lunch_vegetable(lunch):
-    return (
-        lunch.replace(" Sabzi + Roti", "")
-        .replace(" + Roti", "")
-        .strip()
-    )
+    return lunch.split(" + ")[0].split()[0].strip()
 
 
 def extract_dinner_name(dinner):

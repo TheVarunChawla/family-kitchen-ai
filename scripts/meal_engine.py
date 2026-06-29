@@ -18,11 +18,77 @@ def load_previous_plan():
         return data["plan"]
     return {}
 
+
+def build_lunch_options(vegetable):
+    lunch_map = {
+        "Lauki": [
+            "Lauki Chana Dal + Roti",
+            "Lauki Paneer Sabzi + Roti",
+            "Lauki Dahi Curry + Roti",
+        ],
+        "Bhindi": [
+            "Bhindi Peanut Masala + Roti",
+            "Bhindi Dahi Masala + Roti",
+            "Bhindi Besan Sabzi + Roti",
+        ],
+        "Tori": [
+            "Tori Chana Dal + Roti",
+            "Tori Moong Dal Sabzi + Roti",
+            "Tori Paneer Sabzi + Roti",
+        ],
+        "Parwal": [
+            "Parwal Paneer Bhurji + Roti",
+            "Parwal Dahi Masala + Roti",
+            "Parwal Chana Dal + Roti",
+        ],
+        "Kakdi": [
+            "Kakdi Dahi Raita + Roti",
+            "Kakdi Peanut Raita + Roti",
+            "Kakdi Paneer Salad + Roti",
+        ],
+        "Palak": [
+            "Palak Paneer + Roti",
+            "Palak Chana Dal + Roti",
+            "Palak Dahi Kadhi + Roti",
+        ],
+        "Methi": [
+            "Methi Paneer + Roti",
+            "Methi Chana Dal + Roti",
+            "Methi Dahi Sabzi + Roti",
+        ],
+        "Bathua": [
+            "Bathua Raita + Roti",
+            "Bathua Paneer Sabzi + Roti",
+            "Bathua Chana Dal + Roti",
+        ],
+        "Gajar": [
+            "Gajar Matar Paneer + Roti",
+            "Gajar Dahi Sabzi + Roti",
+            "Gajar Chana Dal + Roti",
+        ],
+        "Matar": [
+            "Matar Paneer + Roti",
+            "Matar Chana Dal + Roti",
+            "Matar Dahi Curry + Roti",
+        ],
+        "Beans": [
+            "Beans Chana Dal + Roti",
+            "Beans Peanut Sabzi + Roti",
+            "Beans Paneer Sabzi + Roti",
+        ],
+    }
+    return lunch_map.get(vegetable, [f"{vegetable} Paneer Sabzi + Roti"])
+
+
+def extract_lunch_vegetable_name(lunch):
+    return lunch.split(" + ")[0].split()[0].strip()
+
 def calculate_day_protein(day_plan, nutrition_db):
     total_protein = 0
 
     meals = [
         day_plan["breakfast"],
+        day_plan["lunch"],
         day_plan["dinner"],
         day_plan["protein_add"]
     ]
@@ -77,6 +143,7 @@ def choose_with_history(options, usage_counts, previous_penalties=None, max_coun
 
 def choose_protein_booster(
     breakfast,
+    lunch,
     dinner,
     protein_options,
     protein_count,
@@ -120,6 +187,7 @@ def choose_protein_booster(
     for booster in ranked:
         candidate_day = {
             "breakfast": breakfast,
+            "lunch": lunch,
             "dinner": f"{dinner} + Roti",
             "protein_add": booster,
         }
@@ -228,7 +296,7 @@ def build_previous_counts(previous_plan):
 
     for day, meals in previous_plan.items():
         breakfast = meals["breakfast"]
-        lunch = meals["lunch"].replace(" Sabzi + Roti", "")
+        lunch = meals["lunch"]
         dinner = meals["dinner"].replace(" + Roti", "")
         protein_add = meals["protein_add"]
 
@@ -251,6 +319,10 @@ def generate_weekly_plan(previous_plan=None):
     profile, seasonal, protein_data, nutrition_db = load_data()
     previous_plan = previous_plan or {}
     previous_counts, previous_same_day = build_previous_counts(previous_plan)
+    previous_lunch_vegetable_counts = {}
+    for meals in previous_plan.values():
+        lunch_veg = extract_lunch_vegetable_name(meals["lunch"])
+        previous_lunch_vegetable_counts[lunch_veg] = previous_lunch_vegetable_counts.get(lunch_veg, 0) + 1
     month = get_current_month()
     vegetables = seasonal.get(month, seasonal["June"])
     protein_options = [p["name"] for p in protein_data["daily_protein_options"]]
@@ -263,6 +335,7 @@ def generate_weekly_plan(previous_plan=None):
     high_protein_adds      = ["Paneer","Soya Granules","Hung Curd","Sprouts","Roasted Chana"]
     plan = {}
     breakfast_count  = {}
+    lunch_count      = {}
     vegetable_count  = {}
     protein_count    = {}
     dinner_count     = {}
@@ -312,12 +385,21 @@ def generate_weekly_plan(previous_plan=None):
 
         # LUNCH
         available_veg = [v for v in vegetables if vegetable_count.get(v, 0) < 2] or vegetables
-        vegetable_penalties = dict(previous_counts["lunch"])
+        lunch_vegetable_penalties = {}
+        for veg_option in available_veg:
+            lunch_vegetable_penalties[veg_option] = previous_lunch_vegetable_counts.get(veg_option, 0)
         if day in previous_same_day:
             prev_lunch = previous_same_day[day]["lunch"]
-            vegetable_penalties[prev_lunch] = vegetable_penalties.get(prev_lunch, 0) + 3
-        sabzi = choose_with_history(available_veg, vegetable_count, vegetable_penalties)
-        vegetable_count[sabzi] = vegetable_count.get(sabzi, 0) + 1
+            prev_lunch_vegetable = extract_lunch_vegetable_name(prev_lunch)
+            lunch_vegetable_penalties[prev_lunch_vegetable] = lunch_vegetable_penalties.get(prev_lunch_vegetable, 0) + 3
+        lunch_vegetable = choose_with_history(available_veg, vegetable_count, lunch_vegetable_penalties)
+        lunch_options = build_lunch_options(lunch_vegetable)
+        lunch_penalties = dict(previous_counts["lunch"])
+        if day in previous_same_day:
+            lunch_penalties[prev_lunch] = lunch_penalties.get(prev_lunch, 0) + 3
+        lunch = choose_with_history(lunch_options, lunch_count, lunch_penalties, 1)
+        lunch_count[lunch] = lunch_count.get(lunch, 0) + 1
+        vegetable_count[lunch_vegetable] = vegetable_count.get(lunch_vegetable, 0) + 1
 
         # DINNER
         if day == "Tuesday":
@@ -338,6 +420,7 @@ def generate_weekly_plan(previous_plan=None):
         # PROTEIN ADD
         protein_add = choose_protein_booster(
             breakfast,
+            lunch,
             dinner,
             protein_options,
             protein_count,
@@ -350,7 +433,7 @@ def generate_weekly_plan(previous_plan=None):
 
         plan[day] = {
             "breakfast":   breakfast,
-            "lunch":       f"{sabzi} Sabzi + Roti",
+            "lunch":       lunch,
             "dinner":      f"{dinner} + Roti",
             "protein_add": protein_add
         }
@@ -358,11 +441,15 @@ def generate_weekly_plan(previous_plan=None):
     plan = optimize_low_protein_days(plan, nutrition_db)
     return plan, month, vegetables, nutrition_db
 
-def generate_shopping_list(plan, vegetables):
+def generate_shopping_list(plan, vegetables, nutrition_db):
     sabzis, dals, proteins = set(), set(), set()
     dal_keywords = ["Dal","Rajma","Chole","Kadhi"]
     for day_plan in plan.values():
-        sabzis.add(day_plan["lunch"].replace(" Sabzi + Roti",""))
+        sabzis.add(extract_lunch_vegetable_name(day_plan["lunch"]))
+        lunch_text = day_plan["lunch"]
+        for food, info in nutrition_db.items():
+            if food.lower() in lunch_text.lower() and info["type"] in ["dairy", "soy", "plant", "snack", "curd-based"]:
+                proteins.add(food)
         dinner = day_plan["dinner"].replace(" + Roti","")
         for kw in dal_keywords:
             if kw in dinner:
@@ -424,7 +511,7 @@ def generate_health_tips(plan):
 if __name__ == "__main__":
     previous_plan = load_previous_plan()
     plan, month, veg, nutrition_db = generate_weekly_plan(previous_plan)
-    shopping = generate_shopping_list(plan, veg)
+    shopping = generate_shopping_list(plan, veg, nutrition_db)
     score, avg, daily_protein = calculate_protein_score(
         plan,
         nutrition_db

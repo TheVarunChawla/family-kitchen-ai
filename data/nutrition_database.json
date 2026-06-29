@@ -59,6 +59,12 @@
     "quality": "moderate"
   },
 
+  "Peanut": {
+    "protein": 8,
+    "type": "snack",
+    "quality": "moderate"
+  },
+
   "Moong Dal": {
     "protein": 7,
     "type": "dal",

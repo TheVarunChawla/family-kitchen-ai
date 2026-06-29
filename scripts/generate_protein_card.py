@@ -45,7 +45,7 @@ def calculate_weekly_protein(plan, nutrition_db):
     Go through every day and the sections counted by the meal engine.
     Detect protein foods. Sum up total weekly protein points.
     """
-    sections = ["breakfast", "dinner", "protein_add"]
+    sections = ["breakfast", "lunch", "dinner", "protein_add"]
     weekly_total = 0
     daily_totals = {}
     detected_log = []  # (day, section, food, protein_g)
@@ -165,7 +165,7 @@ def generate():
     # Footer
     draw.rectangle([0, H-50, W, H], fill=HEADER_BG)
     draw.text((W//2, H-25),
-              "Parivaar Nutrition AI  |  Protein detected from breakfast, dinner, and boosters",
+              "Parivaar Nutrition AI  |  Protein detected across breakfast, lunch, dinner, and boosters",
               font=font(13), fill="#90E0EF", anchor="mm")
 
     img.save("protein_card.png")
