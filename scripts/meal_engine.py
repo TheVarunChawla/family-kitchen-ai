@@ -6,6 +6,18 @@ from datetime import datetime
 def get_current_month():
     return datetime.now().strftime("%B")
 
+
+def load_previous_plan():
+    try:
+        with open("data/weekly_meal_plan.json") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return {}
+
+    if isinstance(data, dict) and "plan" in data:
+        return data["plan"]
+    return {}
+
 def calculate_day_protein(day_plan, nutrition_db):
     total_protein = 0
 
@@ -42,11 +54,33 @@ def choose_least_used(options, usage_counts, max_count=None):
     return random.choice(least_used)
 
 
+def choose_with_history(options, usage_counts, previous_penalties=None, max_count=None):
+    previous_penalties = previous_penalties or {}
+    choices = [
+        option
+        for option in options
+        if max_count is None or usage_counts.get(option, 0) < max_count
+    ]
+    if not choices:
+        choices = options
+
+    ranked = sorted(
+        choices,
+        key=lambda option: (
+            usage_counts.get(option, 0),
+            previous_penalties.get(option, 0),
+            random.random(),
+        ),
+    )
+    return ranked[0]
+
+
 def choose_protein_booster(
     breakfast,
     dinner,
     protein_options,
     protein_count,
+    previous_protein_penalties,
     nutrition_db,
     low_protein_breakfast,
     high_protein_adds,
@@ -78,6 +112,7 @@ def choose_protein_booster(
         candidate_pool,
         key=lambda item: (
             protein_count.get(item, 0),
+            previous_protein_penalties.get(item, 0),
             -nutrition_db.get(item, {}).get("protein", 0),
         )
     )
@@ -182,8 +217,40 @@ def load_data():
 
     return profile, seasonal, protein, nutrition
 
-def generate_weekly_plan():
+def build_previous_counts(previous_plan):
+    counts = {
+        "breakfast": {},
+        "lunch": {},
+        "dinner": {},
+        "protein_add": {},
+    }
+    same_day = {}
+
+    for day, meals in previous_plan.items():
+        breakfast = meals["breakfast"]
+        lunch = meals["lunch"].replace(" Sabzi + Roti", "")
+        dinner = meals["dinner"].replace(" + Roti", "")
+        protein_add = meals["protein_add"]
+
+        counts["breakfast"][breakfast] = counts["breakfast"].get(breakfast, 0) + 1
+        counts["lunch"][lunch] = counts["lunch"].get(lunch, 0) + 1
+        counts["dinner"][dinner] = counts["dinner"].get(dinner, 0) + 1
+        counts["protein_add"][protein_add] = counts["protein_add"].get(protein_add, 0) + 1
+
+        same_day[day] = {
+            "breakfast": breakfast,
+            "lunch": lunch,
+            "dinner": dinner,
+            "protein_add": protein_add,
+        }
+
+    return counts, same_day
+
+
+def generate_weekly_plan(previous_plan=None):
     profile, seasonal, protein_data, nutrition_db = load_data()
+    previous_plan = previous_plan or {}
+    previous_counts, previous_same_day = build_previous_counts(previous_plan)
     month = get_current_month()
     vegetables = seasonal.get(month, seasonal["June"])
     protein_options = [p["name"] for p in protein_data["daily_protein_options"]]
@@ -205,27 +272,51 @@ def generate_weekly_plan():
         # BREAKFAST
         if day in ["Saturday","Sunday"]:
             if high_breakfast_days < 4:
-                breakfast = choose_least_used(high_protein_breakfast, breakfast_count, 2)
+                breakfast_penalties = dict(previous_counts["breakfast"])
+                if day in previous_same_day:
+                    prev_breakfast = previous_same_day[day]["breakfast"]
+                    breakfast_penalties[prev_breakfast] = breakfast_penalties.get(prev_breakfast, 0) + 3
+                breakfast = choose_with_history(high_protein_breakfast, breakfast_count, breakfast_penalties, 2)
                 high_breakfast_days += 1
             else:
-                breakfast = choose_least_used(weekend_breakfast, breakfast_count, 1)
+                breakfast_penalties = dict(previous_counts["breakfast"])
+                if day in previous_same_day:
+                    prev_breakfast = previous_same_day[day]["breakfast"]
+                    breakfast_penalties[prev_breakfast] = breakfast_penalties.get(prev_breakfast, 0) + 3
+                breakfast = choose_with_history(weekend_breakfast, breakfast_count, breakfast_penalties, 1)
         else:
             if high_breakfast_days < 4:
                 choices = [b for b in weekday_breakfast
                            if b in high_protein_breakfast and breakfast_count.get(b, 0) < 2]
                 if choices:
-                    breakfast = choose_least_used(choices, breakfast_count)
+                    breakfast_penalties = dict(previous_counts["breakfast"])
+                    if day in previous_same_day:
+                        prev_breakfast = previous_same_day[day]["breakfast"]
+                        breakfast_penalties[prev_breakfast] = breakfast_penalties.get(prev_breakfast, 0) + 3
+                    breakfast = choose_with_history(choices, breakfast_count, breakfast_penalties)
                     high_breakfast_days += 1
                 else:
-                    breakfast = choose_least_used(weekday_breakfast, breakfast_count, 2)
+                    breakfast_penalties = dict(previous_counts["breakfast"])
+                    if day in previous_same_day:
+                        prev_breakfast = previous_same_day[day]["breakfast"]
+                        breakfast_penalties[prev_breakfast] = breakfast_penalties.get(prev_breakfast, 0) + 3
+                    breakfast = choose_with_history(weekday_breakfast, breakfast_count, breakfast_penalties, 2)
             else:
                 choices = [b for b in weekday_breakfast if breakfast_count.get(b, 0) < 2]
-                breakfast = choose_least_used(choices if choices else weekday_breakfast, breakfast_count)
+                breakfast_penalties = dict(previous_counts["breakfast"])
+                if day in previous_same_day:
+                    prev_breakfast = previous_same_day[day]["breakfast"]
+                    breakfast_penalties[prev_breakfast] = breakfast_penalties.get(prev_breakfast, 0) + 3
+                breakfast = choose_with_history(choices if choices else weekday_breakfast, breakfast_count, breakfast_penalties)
         breakfast_count[breakfast] = breakfast_count.get(breakfast, 0) + 1
 
         # LUNCH
         available_veg = [v for v in vegetables if vegetable_count.get(v, 0) < 2] or vegetables
-        sabzi = choose_least_used(available_veg, vegetable_count)
+        vegetable_penalties = dict(previous_counts["lunch"])
+        if day in previous_same_day:
+            prev_lunch = previous_same_day[day]["lunch"]
+            vegetable_penalties[prev_lunch] = vegetable_penalties.get(prev_lunch, 0) + 3
+        sabzi = choose_with_history(available_veg, vegetable_count, vegetable_penalties)
         vegetable_count[sabzi] = vegetable_count.get(sabzi, 0) + 1
 
         # DINNER
@@ -237,7 +328,11 @@ def generate_weekly_plan():
             dinner = "Kadhi"
         else:
             available_dals = [d for d in dal_options if dinner_count.get(d, 0) < 2] or dal_options
-            dinner = choose_least_used(available_dals, dinner_count)
+            dinner_penalties = dict(previous_counts["dinner"])
+            if day in previous_same_day:
+                prev_dinner = previous_same_day[day]["dinner"]
+                dinner_penalties[prev_dinner] = dinner_penalties.get(prev_dinner, 0) + 3
+            dinner = choose_with_history(available_dals, dinner_count, dinner_penalties)
         dinner_count[dinner] = dinner_count.get(dinner, 0) + 1
 
         # PROTEIN ADD
@@ -246,6 +341,7 @@ def generate_weekly_plan():
             dinner,
             protein_options,
             protein_count,
+            dict(previous_counts["protein_add"]),
             nutrition_db,
             low_protein_breakfast,
             high_protein_adds,
@@ -326,7 +422,8 @@ def generate_health_tips(plan):
     return tips, family_tip
 
 if __name__ == "__main__":
-    plan, month, veg, nutrition_db = generate_weekly_plan()
+    previous_plan = load_previous_plan()
+    plan, month, veg, nutrition_db = generate_weekly_plan(previous_plan)
     shopping = generate_shopping_list(plan, veg)
     score, avg, daily_protein = calculate_protein_score(
         plan,
