@@ -111,5 +111,47 @@
     "protein": 6,
     "type": "curd-based",
     "quality": "moderate"
+  },
+
+  "Sprouts Chilla": {
+    "protein": 13,
+    "type": "breakfast",
+    "quality": "excellent"
+  },
+
+  "Oats Chilla": {
+    "protein": 9,
+    "type": "breakfast",
+    "quality": "good"
+  },
+
+  "Vegetable Daliya": {
+    "protein": 6,
+    "type": "breakfast",
+    "quality": "moderate"
+  },
+
+  "Paneer Paratha": {
+    "protein": 11,
+    "type": "breakfast",
+    "quality": "good"
+  },
+
+  "Methi Paratha": {
+    "protein": 5,
+    "type": "breakfast",
+    "quality": "moderate"
+  },
+
+  "Urad Dal": {
+    "protein": 9,
+    "type": "dal",
+    "quality": "good"
+  },
+
+  "Sambar": {
+    "protein": 7,
+    "type": "dal",
+    "quality": "good"
   }
 }

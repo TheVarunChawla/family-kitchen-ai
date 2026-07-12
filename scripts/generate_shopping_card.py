@@ -3,9 +3,11 @@ Image 2: Weekly Shopping List.
 """
 from PIL import Image, ImageDraw, ImageFont
 import json
+from theme import get_theme
 
-BG = "#FFFDF7"
-HEADER_BG = "#1D3557"
+THEME = get_theme()
+BG = THEME["bg"]
+HEADER_BG = THEME["header_bg"]
 SEC_GREEN = "#2D6A4F"
 SEC_ORG = "#E76F51"
 SEC_BLUE = "#457B9D"
@@ -52,7 +54,7 @@ def generate():
 
     draw.rectangle([0, 0, W, 100], fill=HEADER_BG)
     draw.text((W // 2, 36), "Weekly Shopping List", font=font(30, True), fill=TEXT_LITE, anchor="mm")
-    draw.text((W // 2, 76), f"{month}  |  Family of 6  |  Vegetarian", font=font(16), fill="#A8DADC", anchor="mm")
+    draw.text((W // 2, 76), f"{month}  |  Family of 6  |  Vegetarian", font=font(16), fill=THEME["header_sub"], anchor="mm")
 
     y = 120
     y = draw_section(draw, y, "Vegetables", shopping["vegetables"], SEC_GREEN)
@@ -61,7 +63,7 @@ def generate():
     y = draw_section(draw, y, "Kitchen Essentials", shopping["kitchen_essentials"], SEC_PURP)
 
     draw.rectangle([0, H - 50, W, H], fill=HEADER_BG)
-    draw.text((W // 2, H - 25), "Parivaar Nutrition AI  |  Auto-generated every Sunday", font=font(13), fill="#A8DADC", anchor="mm")
+    draw.text((W // 2, H - 25), "Parivaar Nutrition AI  |  Auto-generated every Sunday", font=font(13), fill=THEME["header_sub"], anchor="mm")
 
     img.save("shopping_list.png")
     print("shopping_list.png saved")

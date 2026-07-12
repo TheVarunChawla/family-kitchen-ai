@@ -1,10 +1,12 @@
 from PIL import Image, ImageDraw, ImageFont
 import json
 import textwrap
+from theme import get_theme
 
 
-BG = "#FFFDF7"
-HEADER_BG = "#123B7A"
+THEME = get_theme()
+BG = THEME["bg"]
+HEADER_BG = THEME["header_bg"]
 TEXT_DARK = "#1B1B1B"
 TEXT_MED = "#555555"
 GREEN = "#2D6A4F"
@@ -67,12 +69,12 @@ def generate():
 
     draw.rectangle([0, 0, W, 110], fill=HEADER_BG)
     draw.text((W // 2, 38), "AI Weekly Health Intelligence", font=font(30, True), fill="white", anchor="mm")
-    draw.text((W // 2, 76), "Protein, diabetes, BP, variety, and family-risk scoring", font=font(15), fill="#BDE0FE", anchor="mm")
+    draw.text((W // 2, 76), "Protein, diabetes, BP, variety, and family-risk scoring", font=font(15), fill=THEME["header_sub"], anchor="mm")
 
     cx, cy, r = W // 2, 230, 92
     draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill="#0B3B80")
     draw.text((cx, cy - 18), str(score), fill=GOLD, font=font(54, True), anchor="mm")
-    draw.text((cx, cy + 32), "/100", fill="#BDE0FE", font=font(18, True), anchor="mm")
+    draw.text((cx, cy + 32), "/100", fill=THEME["header_sub"], font=font(18, True), anchor="mm")
     draw.text((cx, cy + 70), grade, fill="white", font=font(16, True), anchor="mm")
 
     draw.rectangle([55, 350, 845, 422], fill=BLUE_LT)
@@ -152,7 +154,7 @@ def generate():
             y += 8
 
     draw.rectangle([0, H - 58, W, H], fill=HEADER_BG)
-    draw.text((W // 2, H - 29), "Parivaar Nutrition AI  |  Real weekly family health scoring", fill="#BDE0FE", font=font(13), anchor="mm")
+    draw.text((W // 2, H - 29), "Parivaar Nutrition AI  |  Real weekly family health scoring", fill=THEME["header_sub"], font=font(13), anchor="mm")
 
     img.save("ai_health_report.png")
     print(f"AI Health Card Generated | Score: {score}/100 | Grade: {grade}")

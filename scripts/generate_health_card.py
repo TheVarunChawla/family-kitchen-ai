@@ -4,9 +4,11 @@ Image 3: Health recommendations per member plus family tip.
 from PIL import Image, ImageDraw, ImageFont
 import json
 import textwrap
+from theme import get_theme
 
-BG = "#FFFDF7"
-HEADER_BG = "#6A0572"
+THEME = get_theme()
+BG = THEME["bg"]
+HEADER_BG = THEME["header_bg"]
 TEXT_LITE = "#FFFFFF"
 TEXT_DARK = "#1B1B1B"
 
@@ -46,8 +48,12 @@ def generate():
     with open("data/weekly_meal_plan.json") as f:
         data = json.load(f)
 
-    tips = data["health_tips"]
-    family_tip = data["family_tip"]
+    analysis = data.get("health_analysis", {})
+    # Prefer the dynamic, data-driven recommendations that health_analyzer.py
+    # computes from this week's actual plan. Fall back to the static tips
+    # only if health_analyzer.py hasn't run yet (older data files).
+    tips = analysis.get("member_recommendations") or data["health_tips"]
+    family_tip = analysis.get("family_goal") or data["family_tip"]
     month = data["month"]
 
     img = Image.new("RGB", (W, H), BG)
@@ -55,7 +61,7 @@ def generate():
 
     draw.rectangle([0, 0, W, 100], fill=HEADER_BG)
     draw.text((W // 2, 36), "Family Health Recommendations", font=font(28, True), fill=TEXT_LITE, anchor="mm")
-    draw.text((W // 2, 74), f"{month}  |  Personalised for Each Member", font=font(16), fill="#E0AAFF", anchor="mm")
+    draw.text((W // 2, 74), f"{month}  |  Personalised for Each Member", font=font(16), fill=THEME["header_sub"], anchor="mm")
 
     y = 120
     for member, tip in tips.items():
@@ -80,7 +86,7 @@ def generate():
         draw.text((W // 2, y + 52 + li * 24), line, font=font(15), fill="#B7E4C7", anchor="mm")
 
     draw.rectangle([0, H - 50, W, H], fill=HEADER_BG)
-    draw.text((W // 2, H - 25), "Parivaar Nutrition AI  |  Small changes, big health", font=font(13), fill="#E0AAFF", anchor="mm")
+    draw.text((W // 2, H - 25), "Parivaar Nutrition AI  |  Small changes, big health", font=font(13), fill=THEME["header_sub"], anchor="mm")
 
     img.save("health_card.png")
     print("health_card.png saved")

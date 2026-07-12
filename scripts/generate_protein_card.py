@@ -6,9 +6,11 @@ Calculates real weekly protein points -> realistic score out of 10
 """
 from PIL import Image, ImageDraw, ImageFont
 import json
+from theme import get_theme
 
-BG        = "#FFFDF7"
-HEADER_BG = "#023E8A"
+THEME     = get_theme()
+BG        = THEME["bg"]
+HEADER_BG = THEME["header_bg"]
 TEXT_LITE = "#FFFFFF"
 TEXT_DARK = "#1B1B1B"
 TEXT_MED  = "#555555"
@@ -122,14 +124,14 @@ def generate():
     # Header
     draw.rectangle([0, 0, W, 100], fill=HEADER_BG)
     draw.text((W//2, 36), "Weekly Protein Score", font=font(30, True), fill=TEXT_LITE, anchor="mm")
-    draw.text((W//2, 74), f"{month}  |  Real Protein Tracking from Meals", font=font(16), fill="#90E0EF", anchor="mm")
+    draw.text((W//2, 74), f"{month}  |  Real Protein Tracking from Meals", font=font(16), fill=THEME["header_sub"], anchor="mm")
 
     # Score circle
     cx, cy, r = W//2, 215, 88
     draw.ellipse([cx-r, cy-r, cx+r, cy+r], fill=HEADER_BG)
     draw.ellipse([cx-r+4, cy-r+4, cx+r-4, cy+r-4], fill="#012A5E")
     draw.text((cx, cy-16), f"{score}", font=font(52, True), fill=GOLD, anchor="mm")
-    draw.text((cx, cy+36), "/ 10", font=font(20), fill="#90E0EF", anchor="mm")
+    draw.text((cx, cy+36), "/ 10", font=font(20), fill=THEME["header_sub"], anchor="mm")
     draw.text((cx, cy+70),  "Weekly Score", font=font(14), fill=TEXT_LITE, anchor="mm")
 
     # Stats row
@@ -166,7 +168,7 @@ def generate():
     draw.rectangle([0, H-50, W, H], fill=HEADER_BG)
     draw.text((W//2, H-25),
               "Parivaar Nutrition AI  |  Protein detected across breakfast, lunch, dinner, and boosters",
-              font=font(13), fill="#90E0EF", anchor="mm")
+              font=font(13), fill=THEME["header_sub"], anchor="mm")
 
     img.save("protein_card.png")
     print(f"protein_card.png saved  |  Score: {score}/10  |  Weekly: {weekly_total}g  |  Avg: {avg_daily}g/day")

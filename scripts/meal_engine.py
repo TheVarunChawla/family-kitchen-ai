@@ -7,6 +7,9 @@ def get_current_month():
     return datetime.now().strftime("%B")
 
 
+HISTORY_WEEKS = 4  # how many past weeks to remember when penalizing repeats
+
+
 def load_previous_plan():
     try:
         with open("data/weekly_meal_plan.json") as f:
@@ -17,6 +20,23 @@ def load_previous_plan():
     if isinstance(data, dict) and "plan" in data:
         return data["plan"]
     return {}
+
+
+def load_history(max_weeks=HISTORY_WEEKS):
+    """Return a list of past weekly plans, oldest first, most recent last.
+    Looks back up to `max_weeks` weeks instead of only last week, so the
+    generator avoids longer repeat cycles, not just a 1-week ping-pong."""
+    try:
+        with open("data/weekly_meal_plan.json") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return []
+
+    history = list(data.get("history", []))
+    if isinstance(data, dict) and "plan" in data:
+        history.append(data["plan"])
+
+    return history[-max_weeks:]
 
 
 def build_lunch_options(vegetable):
@@ -76,8 +96,49 @@ def build_lunch_options(vegetable):
             "Beans Peanut Sabzi + Roti",
             "Beans Paneer Sabzi + Roti",
         ],
+        "Gobhi": [
+            "Gobhi Matar Sabzi + Roti",
+            "Gobhi Paneer Sabzi + Roti",
+            "Gobhi Chana Dal + Roti",
+            "Gobhi Dahi Curry + Roti",
+        ],
+        "Cabbage": [
+            "Cabbage Peanut Sabzi + Roti",
+            "Cabbage Paneer Sabzi + Roti",
+            "Cabbage Chana Dal + Roti",
+        ],
+        "Mushroom": [
+            "Mushroom Matar Sabzi + Roti",
+            "Mushroom Paneer Sabzi + Roti",
+            "Mushroom Chana Masala + Roti",
+        ],
+        "Shimla": [
+            "Shimla Mirch Paneer Sabzi + Roti",
+            "Shimla Mirch Chana Dal + Roti",
+            "Shimla Mirch Besan Sabzi + Roti",
+        ],
+        "Karela": [
+            "Karela Pyaz Sabzi + Roti",
+            "Karela Chana Dal + Roti",
+            "Karela Dahi Sabzi + Roti",
+        ],
+        "Kaddu": [
+            "Kaddu Chana Dal + Roti",
+            "Kaddu Paneer Sabzi + Roti",
+            "Kaddu Dahi Sabzi + Roti",
+        ],
     }
-    return lunch_map.get(vegetable, [f"{vegetable} Paneer Sabzi + Roti"])
+    extra_combos = {
+        "Lauki": ["Lauki Sprouts Sabzi + Roti", "Lauki Soya Granules Sabzi + Roti"],
+        "Bhindi": ["Bhindi Sprouts Sabzi + Roti"],
+        "Tori": ["Tori Peanut Sabzi + Roti"],
+        "Parwal": ["Parwal Chana Sabzi + Roti"],
+        "Palak": ["Palak Soya Granules Sabzi + Roti"],
+        "Methi": ["Methi Soya Granules Sabzi + Roti"],
+        "Matar": ["Matar Soya Granules Sabzi + Roti"],
+    }
+    options = lunch_map.get(vegetable, [f"{vegetable} Paneer Sabzi + Roti"])
+    return options + extra_combos.get(vegetable, [])
 
 
 def extract_lunch_vegetable_name(lunch):
@@ -199,9 +260,9 @@ def choose_protein_booster(
 
 def optimize_low_protein_days(plan, nutrition_db):
     TARGET_PROTEIN = 35
-    replacement_breakfasts = ["Moong Chilla", "Paneer Chilla", "Besan Chilla"]
+    replacement_breakfasts = ["Moong Chilla", "Paneer Chilla", "Besan Chilla", "Sprouts Chilla", "Oats Chilla"]
     fallback_boosters = ["Paneer", "Soya Granules", "Hung Curd", "Roasted Chana", "Sprouts"]
-    low_protein_breakfasts = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]
+    low_protein_breakfasts = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha","Methi Paratha","Vegetable Daliya"]
     breakfast_count = {}
     booster_count = {}
 
@@ -286,6 +347,18 @@ def load_data():
     return profile, seasonal, protein, nutrition
 
 def build_previous_counts(previous_plan):
+    """Kept for backward compatibility (single-week penalties)."""
+    return build_history_counts([previous_plan] if previous_plan else [])
+
+
+def build_history_counts(history):
+    """Build recency-weighted counts across several past weeks.
+
+    The most recent week is weighted heaviest (so it still dominates the
+    same-day penalty), but older weeks contribute too, which stops dishes
+    from just cycling every 2 weeks once the immediate-previous penalty
+    wears off.
+    """
     counts = {
         "breakfast": {},
         "lunch": {},
@@ -293,45 +366,65 @@ def build_previous_counts(previous_plan):
         "protein_add": {},
     }
     same_day = {}
+    history = history or []
+    total_weeks = len(history)
 
-    for day, meals in previous_plan.items():
-        breakfast = meals["breakfast"]
-        lunch = meals["lunch"]
-        dinner = meals["dinner"].replace(" + Roti", "")
-        protein_add = meals["protein_add"]
+    for week_index, plan in enumerate(history):
+        weight = week_index + 1  # oldest week = 1, most recent week = total_weeks
+        is_latest_week = (week_index == total_weeks - 1)
 
-        counts["breakfast"][breakfast] = counts["breakfast"].get(breakfast, 0) + 1
-        counts["lunch"][lunch] = counts["lunch"].get(lunch, 0) + 1
-        counts["dinner"][dinner] = counts["dinner"].get(dinner, 0) + 1
-        counts["protein_add"][protein_add] = counts["protein_add"].get(protein_add, 0) + 1
+        for day, meals in (plan or {}).items():
+            breakfast = meals["breakfast"]
+            lunch = meals["lunch"]
+            dinner = meals["dinner"].replace(" + Roti", "")
+            protein_add = meals["protein_add"]
 
-        same_day[day] = {
-            "breakfast": breakfast,
-            "lunch": lunch,
-            "dinner": dinner,
-            "protein_add": protein_add,
-        }
+            counts["breakfast"][breakfast] = counts["breakfast"].get(breakfast, 0) + weight
+            counts["lunch"][lunch] = counts["lunch"].get(lunch, 0) + weight
+            counts["dinner"][dinner] = counts["dinner"].get(dinner, 0) + weight
+            counts["protein_add"][protein_add] = counts["protein_add"].get(protein_add, 0) + weight
+
+            if is_latest_week:
+                same_day[day] = {
+                    "breakfast": breakfast,
+                    "lunch": lunch,
+                    "dinner": dinner,
+                    "protein_add": protein_add,
+                }
 
     return counts, same_day
 
 
-def generate_weekly_plan(previous_plan=None):
+def generate_weekly_plan(history=None):
     profile, seasonal, protein_data, nutrition_db = load_data()
-    previous_plan = previous_plan or {}
-    previous_counts, previous_same_day = build_previous_counts(previous_plan)
+
+    # Backward compatibility: allow a single previous-week plan (dict) to be
+    # passed in, as well as the newer multi-week history (list of plans).
+    if isinstance(history, dict):
+        history = [history] if history else []
+    history = history or []
+
+    previous_counts, previous_same_day = build_history_counts(history)
     previous_lunch_vegetable_counts = {}
-    for meals in previous_plan.values():
-        lunch_veg = extract_lunch_vegetable_name(meals["lunch"])
-        previous_lunch_vegetable_counts[lunch_veg] = previous_lunch_vegetable_counts.get(lunch_veg, 0) + 1
+    for week_index, plan_week in enumerate(history):
+        weight = week_index + 1
+        for meals in plan_week.values():
+            lunch_veg = extract_lunch_vegetable_name(meals["lunch"])
+            previous_lunch_vegetable_counts[lunch_veg] = previous_lunch_vegetable_counts.get(lunch_veg, 0) + weight
+
     month = get_current_month()
-    vegetables = seasonal.get(month, seasonal["June"])
+    seasonal_veg = seasonal.get(month, seasonal["June"])
+    year_round_veg = profile.get("year_round_vegetables", [])
+    # Combine seasonal + year-round staples so the pool isn't stuck at 3-4
+    # options in lean months, without losing the seasonal preference.
+    vegetables = list(dict.fromkeys(seasonal_veg + year_round_veg))
     protein_options = [p["name"] for p in protein_data["daily_protein_options"]]
     days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
     weekday_breakfast = profile["breakfast_weekday"]
     weekend_breakfast = profile["breakfast_weekend"]
     dal_options = profile["dal_options"]
-    high_protein_breakfast = ["Moong Chilla","Paneer Chilla","Besan Chilla"]
-    low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha"]
+    high_protein_breakfast = ["Moong Chilla","Paneer Chilla","Besan Chilla","Sprouts Chilla","Oats Chilla"]
+    low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha","Methi Paratha","Vegetable Daliya"]
     high_protein_adds      = ["Paneer","Soya Granules","Hung Curd","Sprouts","Roasted Chana"]
     plan = {}
     breakfast_count  = {}
@@ -509,17 +602,22 @@ def generate_health_tips(plan):
     return tips, family_tip
 
 if __name__ == "__main__":
-    previous_plan = load_previous_plan()
-    plan, month, veg, nutrition_db = generate_weekly_plan(previous_plan)
+    history = load_history()
+    plan, month, veg, nutrition_db = generate_weekly_plan(history)
     shopping = generate_shopping_list(plan, veg, nutrition_db)
     score, avg, daily_protein = calculate_protein_score(
         plan,
         nutrition_db
     )
+    # health_tips/family_tip below are a static fallback only; the health
+    # card now prefers the dynamic per-member recommendations that
+    # health_analyzer.py adds to this same file right after this script runs.
     tips, family_tip = generate_health_tips(plan)
+    new_history = (history + [plan])[-HISTORY_WEEKS:]
     with open("data/weekly_meal_plan.json", "w") as f:
         json.dump({"month": month, "plan": plan, "shopping": shopping,
                    "protein_score": score, "protein_avg_daily_g": avg,
                    "daily_protein": daily_protein,
-                   "health_tips": tips, "family_tip": family_tip}, f, indent=2)
+                   "health_tips": tips, "family_tip": family_tip,
+                   "history": new_history}, f, indent=2)
     print(f"Weekly plan generated for {month}")

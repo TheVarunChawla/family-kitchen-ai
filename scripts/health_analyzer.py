@@ -15,12 +15,16 @@ DIABETES_RISKY_BREAKFASTS = {
     "Aloo Paratha",
     "Gobhi Paratha",
     "Mooli Paratha",
+    "Methi Paratha",
+    "Vegetable Daliya",
 }
 
 DIABETES_FRIENDLY_BREAKFASTS = {
     "Moong Chilla",
     "Paneer Chilla",
     "Besan Chilla",
+    "Sprouts Chilla",
+    "Oats Chilla",
 }
 
 HIGH_BP_LIGHT_DINNERS = {
@@ -30,6 +34,8 @@ HIGH_BP_LIGHT_DINNERS = {
     "Arhar Dal",
     "Chana Dal",
     "Kadhi",
+    "Urad Dal",
+    "Sambar",
 }
 
 HIGH_QUALITY_BOOSTERS = {
@@ -234,6 +240,15 @@ def analyze_week(data, family_profile, nutrition_db):
         lightest_protein_days,
     )
 
+    family_goal = build_family_goal(
+        avg_protein,
+        risky_breakfast_days,
+        vegetable_variety,
+        max_booster_repeat,
+        max_breakfast_repeat,
+        good_protein_days,
+    )
+
     return {
         "health_score": score,
         "grade": grade_for_score(score),
@@ -260,6 +275,7 @@ def analyze_week(data, family_profile, nutrition_db):
         "focus_areas": focus_areas,
         "weekly_action_plan": action_plan,
         "member_recommendations": member_recommendations,
+        "family_goal": family_goal,
     }
 
 
@@ -302,6 +318,45 @@ def build_action_plan(
         actions.append("Keep this plan steady and repeat the same protein-plus-vegetable structure next week.")
 
     return actions[:3]
+
+
+def build_family_goal(
+    avg_protein,
+    risky_breakfast_days,
+    vegetable_variety,
+    max_booster_repeat,
+    max_breakfast_repeat,
+    good_protein_days,
+):
+    """Pick one dynamic, week-specific family goal instead of a fixed line.
+
+    Priority: fix the biggest real gap this week (diabetes risk > protein >
+    variety); if the week is genuinely clean, say so with an actual number
+    instead of a generic filler every time.
+    """
+    if risky_breakfast_days:
+        return (
+            f"Pair {format_days(risky_breakfast_days)}'s carb-heavy breakfast "
+            "with curd, sprouts, or paneer to blunt the sugar spike."
+        )
+
+    if avg_protein < FAMILY_AVG_PROTEIN_TARGET:
+        gap = round(FAMILY_AVG_PROTEIN_TARGET - avg_protein, 1)
+        return f"Close the {gap}g/day protein gap — add one extra curd, sprouts, or roasted chana snack daily."
+
+    if max_booster_repeat > 3:
+        return "Rotate protein boosters more evenly instead of leaning on one snack all week."
+
+    if max_breakfast_repeat > 3:
+        return "Rotate breakfasts more evenly — variety, not just protein, keeps this sustainable."
+
+    if vegetable_variety < 5:
+        return "Add at least one new lunch vegetable this week to widen variety."
+
+    return (
+        f"Protein averaged {avg_protein}g/day with {good_protein_days} strong days — "
+        "hold this pattern and keep the variety going next week."
+    )
 
 
 def build_member_recommendations(

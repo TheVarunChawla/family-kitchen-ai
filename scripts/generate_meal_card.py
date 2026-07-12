@@ -5,14 +5,16 @@ Optimized for mobile sharing with larger text and stronger contrast.
 from PIL import Image, ImageDraw, ImageFont
 import json
 import textwrap
+from theme import get_theme
 
-BG = "#F6F3EA"
-HEADER_BG = "#1F5C45"
-HEADER_SUB = "#DCEFE4"
+THEME = get_theme()
+BG = THEME["bg"]
+HEADER_BG = THEME["header_bg"]
+HEADER_SUB = THEME["header_sub"]
 CARD_BG = "#FFFDF8"
 CARD_ALT = "#F1F7F1"
 CARD_BORDER = "#B7D8C3"
-DAY_BG = "#46A36F"
+DAY_BG = THEME["accent"]
 TEXT_DARK = "#153126"
 TEXT_MED = "#27473A"
 TEXT_LITE = "#FFFFFF"
