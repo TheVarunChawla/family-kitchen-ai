@@ -17,6 +17,7 @@ DIABETES_RISKY_BREAKFASTS = {
     "Mooli Paratha",
     "Methi Paratha",
     "Vegetable Daliya",
+    "Mixed Vegetable Paratha",
 }
 
 DIABETES_FRIENDLY_BREAKFASTS = {
@@ -25,6 +26,11 @@ DIABETES_FRIENDLY_BREAKFASTS = {
     "Besan Chilla",
     "Sprouts Chilla",
     "Oats Chilla",
+    "Chole Suji Dhokla",
+    "Moong Dal Dhokla",
+    "Paneer Cabbage Sandwich",
+    "Savory Rajma Oats",
+    "Soya Oats Dosa",
 }
 
 HIGH_BP_LIGHT_DINNERS = {

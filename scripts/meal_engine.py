@@ -260,9 +260,9 @@ def choose_protein_booster(
 
 def optimize_low_protein_days(plan, nutrition_db):
     TARGET_PROTEIN = 35
-    replacement_breakfasts = ["Moong Chilla", "Paneer Chilla", "Besan Chilla", "Sprouts Chilla", "Oats Chilla"]
+    replacement_breakfasts = ["Moong Chilla", "Paneer Chilla", "Besan Chilla", "Sprouts Chilla", "Oats Chilla", "Chole Suji Dhokla", "Moong Dal Dhokla", "Paneer Cabbage Sandwich", "Savory Rajma Oats", "Soya Oats Dosa"]
     fallback_boosters = ["Paneer", "Soya Granules", "Hung Curd", "Roasted Chana", "Sprouts"]
-    low_protein_breakfasts = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha","Methi Paratha","Vegetable Daliya"]
+    low_protein_breakfasts = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha","Methi Paratha","Vegetable Daliya","Mixed Vegetable Paratha"]
     breakfast_count = {}
     booster_count = {}
 
@@ -423,8 +423,8 @@ def generate_weekly_plan(history=None):
     weekday_breakfast = profile["breakfast_weekday"]
     weekend_breakfast = profile["breakfast_weekend"]
     dal_options = profile["dal_options"]
-    high_protein_breakfast = ["Moong Chilla","Paneer Chilla","Besan Chilla","Sprouts Chilla","Oats Chilla"]
-    low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha","Methi Paratha","Vegetable Daliya"]
+    high_protein_breakfast = ["Moong Chilla","Paneer Chilla","Besan Chilla","Sprouts Chilla","Oats Chilla","Chole Suji Dhokla","Moong Dal Dhokla","Paneer Cabbage Sandwich","Savory Rajma Oats","Soya Oats Dosa"]
+    low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha","Methi Paratha","Vegetable Daliya","Mixed Vegetable Paratha"]
     high_protein_adds      = ["Paneer","Soya Granules","Hung Curd","Sprouts","Roasted Chana"]
     plan = {}
     breakfast_count  = {}

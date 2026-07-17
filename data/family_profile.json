@@ -10,8 +10,8 @@
     { "name": "Varun",   "age": 34, "conditions": [], "protein_priority": "high" },
     { "name": "Wife",    "age": 32, "conditions": [], "protein_priority": "normal" }
   ],
-  "breakfast_weekday": ["Poha", "Upma", "Dalia", "Moong Chilla", "Besan Chilla", "Paneer Chilla", "Sprouts Chilla", "Oats Chilla", "Vegetable Daliya"],
-  "breakfast_weekend": ["Aloo Paratha", "Gobhi Paratha", "Mooli Paratha", "Paneer Paratha", "Methi Paratha"],
+  "breakfast_weekday": ["Poha", "Upma", "Dalia", "Moong Chilla", "Besan Chilla", "Paneer Chilla", "Sprouts Chilla", "Oats Chilla", "Vegetable Daliya", "Chole Suji Dhokla", "Moong Dal Dhokla", "Paneer Cabbage Sandwich", "Savory Rajma Oats", "Soya Oats Dosa"],
+  "breakfast_weekend": ["Aloo Paratha", "Gobhi Paratha", "Mooli Paratha", "Paneer Paratha", "Methi Paratha", "Mixed Vegetable Paratha"],
   "dal_options": ["Arhar Dal", "Moong Dal", "Masoor Dal", "Chana Dal", "Mixed Dal", "Urad Dal", "Sambar"],
   "special_dinner": ["Rajma", "Chole", "Kadhi"],
   "year_round_vegetables": ["Gobhi", "Cabbage", "Mushroom", "Shimla", "Karela", "Kaddu"],

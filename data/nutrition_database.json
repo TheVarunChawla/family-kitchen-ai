@@ -153,5 +153,11 @@
     "protein": 7,
     "type": "dal",
     "quality": "good"
+  },
+
+  "Soya Oats Dosa": {
+    "protein": 8,
+    "type": "breakfast",
+    "quality": "good"
   }
 }
