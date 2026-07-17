@@ -424,6 +424,8 @@ def generate_weekly_plan(history=None):
     weekend_breakfast = profile["breakfast_weekend"]
     dal_options = profile["dal_options"]
     high_protein_breakfast = ["Moong Chilla","Paneer Chilla","Besan Chilla","Sprouts Chilla","Oats Chilla","Chole Suji Dhokla","Moong Dal Dhokla","Paneer Cabbage Sandwich","Savory Rajma Oats","Soya Oats Dosa"]
+    chilla_breakfasts      = ["Moong Chilla","Paneer Chilla","Besan Chilla","Sprouts Chilla","Oats Chilla"]
+    CHILLA_TARGET = 3  # family favorite — reserve this many high-protein slots for a chilla before newer dishes get a turn
     low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha","Methi Paratha","Vegetable Daliya","Mixed Vegetable Paratha"]
     high_protein_adds      = ["Paneer","Soya Granules","Hung Curd","Sprouts","Roasted Chana"]
     plan = {}
@@ -433,6 +435,7 @@ def generate_weekly_plan(history=None):
     protein_count    = {}
     dinner_count     = {}
     high_breakfast_days = 0
+    chilla_days = 0
 
     for day in days:
         # BREAKFAST
@@ -442,7 +445,8 @@ def generate_weekly_plan(history=None):
                 if day in previous_same_day:
                     prev_breakfast = previous_same_day[day]["breakfast"]
                     breakfast_penalties[prev_breakfast] = breakfast_penalties.get(prev_breakfast, 0) + 3
-                breakfast = choose_with_history(high_protein_breakfast, breakfast_count, breakfast_penalties, 2)
+                high_protein_pool = chilla_breakfasts if chilla_days < CHILLA_TARGET else high_protein_breakfast
+                breakfast = choose_with_history(high_protein_pool, breakfast_count, breakfast_penalties, 2)
                 high_breakfast_days += 1
             else:
                 breakfast_penalties = dict(previous_counts["breakfast"])
@@ -452,8 +456,9 @@ def generate_weekly_plan(history=None):
                 breakfast = choose_with_history(weekend_breakfast, breakfast_count, breakfast_penalties, 1)
         else:
             if high_breakfast_days < 4:
+                high_protein_pool = chilla_breakfasts if chilla_days < CHILLA_TARGET else high_protein_breakfast
                 choices = [b for b in weekday_breakfast
-                           if b in high_protein_breakfast and breakfast_count.get(b, 0) < 2]
+                           if b in high_protein_pool and breakfast_count.get(b, 0) < 2]
                 if choices:
                     breakfast_penalties = dict(previous_counts["breakfast"])
                     if day in previous_same_day:
@@ -475,6 +480,8 @@ def generate_weekly_plan(history=None):
                     breakfast_penalties[prev_breakfast] = breakfast_penalties.get(prev_breakfast, 0) + 3
                 breakfast = choose_with_history(choices if choices else weekday_breakfast, breakfast_count, breakfast_penalties)
         breakfast_count[breakfast] = breakfast_count.get(breakfast, 0) + 1
+        if breakfast in chilla_breakfasts:
+            chilla_days += 1
 
         # LUNCH
         available_veg = [v for v in vegetables if vegetable_count.get(v, 0) < 2] or vegetables
