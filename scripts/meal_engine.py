@@ -376,7 +376,7 @@ def build_history_counts(history):
         for day, meals in (plan or {}).items():
             breakfast = meals["breakfast"]
             lunch = meals["lunch"]
-            dinner = meals["dinner"].replace(" + Roti", "")
+            dinner = meals["dinner"].split(" + ")[0].strip()
             protein_add = meals["protein_add"]
 
             counts["breakfast"][breakfast] = counts["breakfast"].get(breakfast, 0) + weight
@@ -428,12 +428,14 @@ def generate_weekly_plan(history=None):
     CHILLA_TARGET = 3  # family favorite — reserve this many high-protein slots for a chilla before newer dishes get a turn
     low_protein_breakfast  = ["Poha","Upma","Dalia","Aloo Paratha","Gobhi Paratha","Mooli Paratha","Methi Paratha","Vegetable Daliya","Mixed Vegetable Paratha"]
     high_protein_adds      = ["Paneer","Soya Granules","Hung Curd","Sprouts","Roasted Chana"]
+    dinner_staples         = profile.get("dinner_staples", ["Roti"])
     plan = {}
     breakfast_count  = {}
     lunch_count      = {}
     vegetable_count  = {}
     protein_count    = {}
     dinner_count     = {}
+    staple_count     = {}
     high_breakfast_days = 0
     chilla_days = 0
 
@@ -517,6 +519,10 @@ def generate_weekly_plan(history=None):
             dinner = choose_with_history(available_dals, dinner_count, dinner_penalties)
         dinner_count[dinner] = dinner_count.get(dinner, 0) + 1
 
+        # STAPLE (roti / rice / millet roti alternatives)
+        staple = choose_least_used(dinner_staples, staple_count)
+        staple_count[staple] = staple_count.get(staple, 0) + 1
+
         # PROTEIN ADD
         protein_add = choose_protein_booster(
             breakfast,
@@ -534,7 +540,7 @@ def generate_weekly_plan(history=None):
         plan[day] = {
             "breakfast":   breakfast,
             "lunch":       lunch,
-            "dinner":      f"{dinner} + Roti",
+            "dinner":      f"{dinner} + {staple}",
             "protein_add": protein_add
         }
 
@@ -550,7 +556,7 @@ def generate_shopping_list(plan, vegetables, nutrition_db):
         for food, info in nutrition_db.items():
             if food.lower() in lunch_text.lower() and info["type"] in ["dairy", "soy", "plant", "snack", "curd-based"]:
                 proteins.add(food)
-        dinner = day_plan["dinner"].replace(" + Roti","")
+        dinner = day_plan["dinner"].split(" + ")[0].strip()
         for kw in dal_keywords:
             if kw in dinner:
                 dals.add(dinner)

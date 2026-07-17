@@ -82,7 +82,7 @@ def extract_lunch_vegetable(lunch):
 
 
 def extract_dinner_name(dinner):
-    return dinner.replace(" + Roti", "").replace(" + Salad", "").strip()
+    return dinner.split(" + ")[0].strip()
 
 
 def format_days(days):

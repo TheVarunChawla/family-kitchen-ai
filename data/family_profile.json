@@ -14,6 +14,7 @@
   "breakfast_weekend": ["Aloo Paratha", "Gobhi Paratha", "Mooli Paratha", "Paneer Paratha", "Methi Paratha", "Mixed Vegetable Paratha"],
   "dal_options": ["Arhar Dal", "Moong Dal", "Masoor Dal", "Chana Dal", "Mixed Dal", "Urad Dal", "Sambar", "Dal Soya", "Panchmel Dal"],
   "special_dinner": ["Rajma", "Chole", "Kadhi"],
+  "dinner_staples": ["Roti", "Jowar Roti", "Bajra Roti", "Chawal", "Brown Rice"],
   "year_round_vegetables": ["Gobhi", "Cabbage", "Mushroom", "Shimla", "Karela", "Kaddu"],
   "avoid": ["White Bread", "Cold Drinks", "Excess Sugar", "Excess Salt", "Fried Snacks"]
 }
