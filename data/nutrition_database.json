@@ -159,5 +159,17 @@
     "protein": 8,
     "type": "breakfast",
     "quality": "good"
+  },
+
+  "Dal Soya": {
+    "protein": 16,
+    "type": "dal",
+    "quality": "excellent"
+  },
+
+  "Panchmel Dal": {
+    "protein": 11,
+    "type": "dal",
+    "quality": "excellent"
   }
 }

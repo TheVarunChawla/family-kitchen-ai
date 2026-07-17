@@ -42,6 +42,8 @@ HIGH_BP_LIGHT_DINNERS = {
     "Kadhi",
     "Urad Dal",
     "Sambar",
+    "Dal Soya",
+    "Panchmel Dal",
 }
 
 HIGH_QUALITY_BOOSTERS = {
